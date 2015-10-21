@@ -177,6 +177,7 @@ class HttpClientCore extends HttpClient {
         }
 
         log.verbose("URL = " + url + ", Status Code : "  + rc + ", : RESPONSE = " + page);
+        //System.out.println(page);
         switch (rc) {
         case HttpURLConnection.HTTP_FORBIDDEN:
             {
@@ -188,10 +189,10 @@ class HttpClientCore extends HttpClient {
                     payload            = pageJso.getJSONObject("payload");
                     throw new PubnubException(
                     		getErrorObject(PNERROBJ_FORBIDDEN, message, payload)
-                    		, page, pageJso);
+                    		, page, pageJso, rc);
                 } catch (JSONException e2) {}
 
-                throw new PubnubException(getErrorObject(PNERROBJ_FORBIDDEN, page), page);
+                throw new PubnubException(getErrorObject(PNERROBJ_FORBIDDEN, page), page, rc);
             }
         case HttpURLConnection.HTTP_UNAUTHORIZED:
 	        {
@@ -203,10 +204,10 @@ class HttpClientCore extends HttpClient {
 	                payload            = pageJso.getJSONObject("payload");
 	                throw new PubnubException(
 	                		getErrorObject(PNERROBJ_UNAUTHORIZED, message, payload)
-	                		, page, pageJso);
+	                		, page, pageJso, rc);
 	            } catch (JSONException e2) {}
 	
-	            throw new PubnubException(getErrorObject(PNERROBJ_UNAUTHORIZED, page), page);
+	            throw new PubnubException(getErrorObject(PNERROBJ_UNAUTHORIZED, page), page, rc);
 	        }
 
         case HttpURLConnection.HTTP_BAD_REQUEST:
@@ -219,10 +220,10 @@ class HttpClientCore extends HttpClient {
 	                payload            = pageJso.getJSONObject("payload");
 	                throw new PubnubException(
 	                		getErrorObject(PNERROBJ_BAD_REQUEST, message, payload)
-	                		, page, pageJso);
+	                		, page, pageJso, rc);
 	            } catch (JSONException e2) {}
 	
-	            throw new PubnubException(getErrorObject(PNERROBJ_BAD_REQUEST, page), page);
+	            throw new PubnubException(getErrorObject(PNERROBJ_BAD_REQUEST, page), page, rc);
 	        }
 
         case HttpURLConnection.HTTP_NOT_FOUND:
@@ -235,20 +236,20 @@ class HttpClientCore extends HttpClient {
 	                payload            = pageJso.getJSONObject("payload");
 	                throw new PubnubException(
 	                		getErrorObject(PNERROBJ_NOT_FOUND_ERROR, message, payload)
-	                		, page, pageJso);
+	                		, page, pageJso, rc);
 	            } catch (JSONException e2) {}
 	
-	            throw new PubnubException(getErrorObject(PNERROBJ_NOT_FOUND_ERROR, page), page);
+	            throw new PubnubException(getErrorObject(PNERROBJ_NOT_FOUND_ERROR, page), page, rc);
 	        }
 
         case HttpURLConnection.HTTP_BAD_GATEWAY:
-            throw new PubnubException(getErrorObject(PNERROBJ_BAD_GATEWAY, url), page);
+            throw new PubnubException(getErrorObject(PNERROBJ_BAD_GATEWAY, url), page, rc);
         case HttpURLConnection.HTTP_CLIENT_TIMEOUT:
-            throw new PubnubException(getErrorObject(PNERROBJ_CLIENT_TIMEOUT, url), page);
+            throw new PubnubException(getErrorObject(PNERROBJ_CLIENT_TIMEOUT, url), page, rc);
         case HttpURLConnection.HTTP_GATEWAY_TIMEOUT:
-            throw new PubnubException(getErrorObject(PNERROBJ_GATEWAY_TIMEOUT, url), page);
+            throw new PubnubException(getErrorObject(PNERROBJ_GATEWAY_TIMEOUT, url), page, rc);
         case HttpURLConnection.HTTP_INTERNAL_ERROR:
-            throw new PubnubException(getErrorObject(PNERROBJ_INTERNAL_ERROR, url + " : " + rc), page);
+            throw new PubnubException(getErrorObject(PNERROBJ_INTERNAL_ERROR, url + " : " + rc), page, rc);
         default:
             break;
         }

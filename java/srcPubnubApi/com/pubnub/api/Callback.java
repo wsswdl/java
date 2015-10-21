@@ -8,6 +8,65 @@ package com.pubnub.api;
  *
  */
 public abstract class Callback {
+	
+	public void hereNowCallback(Result result) {
+		
+	}
+
+	public void hereNowCallback(Status status) {
+		
+	}
+
+	public void grantCallback(Result result) {
+		
+	}
+
+	public void grantCallback(Status status) {
+		
+	}
+	
+	
+	
+	public void successCallback(String channel, Object message, Result result) {
+		if (result == null) {
+			successCallback(channel, message);
+		} else {
+			switch(result.getOperation()) {
+			case HERE_NOW_FOR_CHANNEL:
+				hereNowCallback(result);
+				break;
+			case GRANT:
+				grantCallback(result);
+				grantCallback((Status)result);
+				break;
+			default:
+				break;
+				
+			}
+		}
+	}
+	
+	public void errorCallback(String channel, PubnubError error, Result result) {
+		if (result == null) {
+			errorCallback(channel, error);
+		} else {
+			switch(result.getOperation()) {
+			case HERE_NOW_FOR_CHANNEL:
+				hereNowCallback((Status)result);
+				hereNowCallback(result);
+				break;
+			case GRANT:
+				grantCallback((Status)result);
+				grantCallback(result);				
+				break;
+			default:
+				break;
+				
+			}
+		}
+	}
+	
+	
 
     /**
      * This callback will be invoked when a message is received on the channel
@@ -19,7 +78,7 @@ public abstract class Callback {
      *
      */
     public void successCallback(String channel, Object message) {
-
+    	
     }
 
     /**

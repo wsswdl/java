@@ -11,11 +11,22 @@ class HttpRequest {
     private String[] urlComponents;
     private Hashtable params;
     private String url;
-    private boolean dar;
+
+
+	private boolean dar;
     private boolean subzero;
     private Worker _worker;
+    private Result result;
 
-    public boolean isSubzero() {
+    public Result getResult() {
+		return result;
+	}
+
+	public void setResult(Result result) {
+		this.result = result;
+	}
+
+	public boolean isSubzero() {
         return subzero;
     }
 
@@ -53,6 +64,14 @@ class HttpRequest {
         this.setResponseHandler(rh);
     }
 
+    public HttpRequest(String[] urlComponents, Hashtable params,
+            ResponseHandler rh, Result result) {
+		this.setUrlComponents(urlComponents);
+		this.setParams(params);
+		this.setResponseHandler(rh);
+		this.setResult(result);
+    }
+    
     public HttpRequest(String[] urlComponents, ResponseHandler rh) {
         this.setUrlComponents(urlComponents);
         this.setResponseHandler(rh);
