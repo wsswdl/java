@@ -15,11 +15,13 @@ class Logger extends AbstractLogger {
     @Override
     protected void nativeDebug(String s) {
         log.debug(s);
+        System.out.println(s);
     }
 
     @Override
     protected void nativeVerbose(String s) {
         log.trace(s);
+        System.out.println(s);
     }
 
     @Override
@@ -30,5 +32,6 @@ class Logger extends AbstractLogger {
     @Override
     protected void nativeInfo(String s) {
         log.info(s);
+        System.out.println(s);
     }
 }

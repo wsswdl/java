@@ -176,7 +176,7 @@ class HttpClientCore extends HttpClient {
             }
         }
 
-        log.verbose("URL = " + url + ", Status Code : "  + rc + ", : RESPONSE = " + page);
+        log.verbose("URL = " + url + ", StatusInterface Code : "  + rc + ", : RESPONSE = " + page);
         //System.out.println(page);
         switch (rc) {
         case HttpURLConnection.HTTP_FORBIDDEN:
@@ -263,6 +263,9 @@ class HttpClientCore extends HttpClient {
     public void shutdown() {
         if (connection != null) {
             try {
+                
+                connection.setConnectTimeout(1);
+                connection.setReadTimeout(2);
                 connection.disconnect();
             } catch (Exception e) {
             }

@@ -81,12 +81,12 @@ public class PubnubError {
     public static final int         PNERR_GATEWAY_TIMEOUT                      =       111;
 
     /**
-     * Pubnub server returned HTTP 403 forbidden status code.
+     * Pubnub server returned HTTP 403 forbidden statusInterface code.
      * Happens when wrong authentication key is used .
      */
     public static final int         PNERR_FORBIDDEN                            =       112;
     /**
-     * Pubnub server returned HTTP 401 unauthorized status code
+     * Pubnub server returned HTTP 401 unauthorized statusInterface code
      * Happens when authentication key is missing .
      */
     public static final int         PNERR_UNAUTHORIZED                         =       113;
@@ -160,7 +160,7 @@ public class PubnubError {
     static final int                PNERR_BAD_GATEWAY                          =       124;
 
     /**
-     * Pubnub server returned HTTP 502 internal server error status code.
+     * Pubnub server returned HTTP 502 internal server error statusInterface code.
      * Please contact support with error details.
      */
     static final int                PNERR_INTERNAL_ERROR                       =       125;
@@ -179,7 +179,7 @@ public class PubnubError {
 
     public static final int                PNERR_HTTP_RC_ERROR                        =       128;
     /**
-     * Pubnub server or intermediate server returned HTTP 404 unauthorized status code
+     * Pubnub server or intermediate server returned HTTP 404 unauthorized statusInterface code
      *
      */
     public static final int         PNERR_NOT_FOUND                         =       129;

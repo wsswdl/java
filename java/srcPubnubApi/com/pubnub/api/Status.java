@@ -1,22 +1,16 @@
 package com.pubnub.api;
 
-public class Status extends Result {
+class Status {
+	boolean wasAutoRetried;
+	boolean isError;
+	StatusCategory category;
 	
-	public Status() {
-		super();
-	}
-	public Status(Result result) {
-		this.authKey = result.authKey;
-		this.operation = result.operation;
-		this.origin = result.origin;
-		this.statusCode = result.statusCode;
-		this.uuid = result.uuid;
-		this.type = result.type;
-		this.hreq = result.hreq;
-		this.pubnub = result.pubnub;
-	}
-	
-	public void retry() {
-		this.pubnub.sendNonSubscribeRequest(hreq);
+	public String toString() {
+		String s = "";
+		s = s + "Was Auto Retried ? : " + wasAutoRetried + "\n"; 
+		s = s + "Is Error ? : " + isError + "\n";
+		s = s + "Category : " + category + "\n";
+		
+		return s;
 	}
 }

@@ -97,12 +97,16 @@ class NonSubscribeWorker extends Worker {
         Result result = hreq.getResult();
         try {
             log.debug(hreq.getUrl());
-            hresp = httpclient.fetch(hreq.getUrl(), hreq.getHeaders());
+            String url = hreq.getUrl();
+            result.clientRequest = url;
+            hresp = httpclient.fetch(url, hreq.getHeaders());
         } catch (PubnubException pe) {
             log.debug("Pubnub Exception in Fetch : " + pe.getPubnubError());
 
-            if (result != null)
-            	result.setStatusCode(pe.getStatusCode());
+            if (result != null) {
+            	result.code = pe.getStatusCode();
+            	result.serverResponse = pe.getErrorResponse();
+            }
             if (!_die)
                 hreq.getResponseHandler().handleError(hreq, pe.getPubnubError(), hreq.getResult());
             return;
@@ -113,8 +117,10 @@ class NonSubscribeWorker extends Worker {
             return;
         } finally {
 
-            if (result != null && hresp != null)
-            	result.setStatusCode(hresp.getStatusCode());
+            if (result != null && hresp != null) {
+            	result.code = hresp.getStatusCode();
+            	result.serverResponse = hresp.getResponse();
+            }
         }
 
         if (!_die) {

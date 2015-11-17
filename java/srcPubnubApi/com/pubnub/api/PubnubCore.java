@@ -56,8 +56,8 @@ abstract class PubnubCore implements PubnubInterface {
 			
 		}
 		if (result != null) {
-			result.setOrigin(ORIGIN_STR.split("://")[1]);
-			result.setTLSEnabled(this.SSL);
+			result.config.origin = ORIGIN_STR.split("://")[1];
+			result.config.TLS = this.SSL;
 		}
 		return ORIGIN_STR;
 	}
@@ -203,6 +203,8 @@ abstract class PubnubCore implements PubnubInterface {
 		String storeInHistory = (String) args.get("storeInHistory");
 		String msgStr = message.toString();
 		Hashtable parameters = PubnubUtil.hashtableClone(params);
+		
+		PublishStatus result = new PublishStatus();
 
 		if (storeInHistory != null && storeInHistory.length() > 0)
 			parameters.put("store", storeInHistory);
@@ -248,11 +250,11 @@ abstract class PubnubCore implements PubnubInterface {
 						getPubnubError(e, PubnubError.PNERROBJ_ENCRYPTION_ERROR, 5, msgStr + " : " + e.toString()));
 			}
 		}
-		String[] urlComponents = { getPubnubUrl(), "publish", this.PUBLISH_KEY, this.SUBSCRIBE_KEY,
+		String[] urlComponents = { getPubnubUrl(result), "publish", this.PUBLISH_KEY, this.SUBSCRIBE_KEY,
 				PubnubUtil.urlEncode(signature), PubnubUtil.urlEncode(channel), "0", PubnubUtil.urlEncode(msgStr) };
 
 		class PublishResponseHandler extends ResponseHandler {
-			public void handleResponse(HttpRequest hreq, String response) {
+			public void handleResponse(HttpRequest hreq, String response, Result result) {
 				JSONArray jsarr;
 				try {
 					jsarr = new JSONArray(response);
@@ -260,16 +262,17 @@ abstract class PubnubCore implements PubnubInterface {
 					handleError(hreq, PubnubError.getErrorObject(PubnubError.PNERROBJ_INVALID_JSON, 1, response));
 					return;
 				}
-				callback.successCallback(channel, jsarr);
+				callback.successCallback(channel, jsarr, result);
 			}
 
-			public void handleError(HttpRequest hreq, PubnubError error) {
-				callback.errorCallback(channel, error);
+			public void handleError(HttpRequest hreq, PubnubError error, Result result) {
+				callback.errorCallback(channel, error, (PublishStatus) result);
 				return;
 			}
 		}
-		HttpRequest hreq = new HttpRequest(urlComponents, parameters, new PublishResponseHandler());
-
+		HttpRequest hreq = new HttpRequest(urlComponents, parameters, new PublishResponseHandler(), result);
+		
+		setResultData(result, OperationType.PUBLISH, hreq);
 		return _request(hreq, (sync) ? null : nonSubscribeManager);
 
 	}
@@ -436,7 +439,7 @@ abstract class PubnubCore implements PubnubInterface {
 		final Callback cb = getWrappedCallback(callback);
 		Hashtable parameters = PubnubUtil.hashtableClone(params);
 		ArrayList urlArgs = new ArrayList();
-		Result result = new Result();
+		HereNowResult result = new HereNowResult();
 
 		urlArgs.add(getPubnubUrl(result));
 		urlArgs.add("v2");
@@ -466,27 +469,32 @@ abstract class PubnubCore implements PubnubInterface {
 
 		String[] path = (String[]) urlArgs.toArray(new String[urlArgs.size()]);
 
-		result.setAuthKey(this.AUTH_STR);
-		result.setOperation(OperationType.HERE_NOW_FOR_CHANNEL);
-		result.setUuid(this.UUID);
+
 
 		HttpRequest hreq = new HttpRequest(path, parameters, new ResponseHandler() {
 			public void handleResponse(HttpRequest hreq, String response, Result result) {
-				result.setType(ResultType.RESPONSE);
 				invokeCallback(null, response, "payload", cb, 1, result);
 			}
 
 			public void handleError(HttpRequest hreq, PubnubError error, Result result) {
-				result.setType(ResultType.ERROR);
-				Status status = new Status(result);
-				cb.errorCallback(null, error, new Status(result));
+				HereNowStatus status = new HereNowStatus((HereNowResult)result);
+				cb.errorCallback(null, error, status);
 			}
 		}, result);
-		result.setHreq(hreq);
-		result.setPubnub(this);
+		
+		setResultData(result, OperationType.HERE_NOW_FOR_CHANNEL, hreq);
+		
 		return _request(hreq, (sync) ? null : nonSubscribeManager);
 	}
 
+	protected void setResultData(Result result, OperationType operationType, HttpRequest hreq) {
+		result.hreq = hreq; 
+		result.pubnub = this;
+		result.config.authKey = this.AUTH_STR;
+		result.config.uuid = this.UUID;
+		result.operation = operationType;
+	}
+	
 	protected boolean validateInput(String name, Object input, Callback callback) {
 
 		if (input == null) {
@@ -1172,7 +1180,7 @@ abstract class PubnubCore implements PubnubInterface {
 			Callback callback, boolean sync) {
 		final Callback cb = getWrappedCallback(callback);
 		Hashtable parameters = PubnubUtil.hashtableClone(params);
-		final Status status = new Status();
+		final GrantStatus status = new GrantStatus();
 
 		String r = (read) ? "1" : "0";
 		String w = (write) ? "1" : "0";
@@ -1213,27 +1221,21 @@ abstract class PubnubCore implements PubnubInterface {
 		if (ttl >= -1)
 			parameters.put("ttl", String.valueOf(ttl));
 		
-		status.setUuid(this.UUID);
-		status.setOperation(OperationType.GRANT);
-		
 
 		String[] urlComponents = { getPubnubUrl(status), "v1", "auth", "grant", "sub-key", this.SUBSCRIBE_KEY };
 
 		HttpRequest hreq = new HttpRequest(urlComponents, parameters, new ResponseHandler() {
 			public void handleResponse(HttpRequest hreq, String response, Result status) {
-				status.setType(ResultType.STATUS);
 				invokeCallback(channel, response, "payload", cb, 4, status);
 			}
 
 			public void handleError(HttpRequest hreq, PubnubError error, Result status) {
-				status.setType(ResultType.ERROR);
 				cb.errorCallback(channel, error, status);
 				return;
 			}
 		}, status);
-
-		status.setHreq(hreq);
-		status.setPubnub(this);
+		
+		setResultData(status, OperationType.GRANT, hreq);
 		return _request(hreq, (sync) ? null : nonSubscribeManager);
 
 	}

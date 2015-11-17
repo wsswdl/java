@@ -35,7 +35,7 @@ public class StateTest {
 
         JSONObject state = new JSONObject();
         state.put("nickname", "jtester");
-        state.put("status", "online");
+        state.put("statusInterface", "online");
         state.put("age", 32);
 
         final CountDownLatch latch1 = new CountDownLatch(1);
@@ -59,7 +59,7 @@ public class StateTest {
         JSONObject result = (JSONObject) cb3.getResponse();
 
         assertEquals(state.getString("nickname"), result.getString("nickname"));
-        assertEquals(state.getString("status"), result.getString("status"));
+        assertEquals(state.getString("statusInterface"), result.getString("statusInterface"));
         assertEquals(state.getInt("age"), result.getInt("age"));
     }
 
@@ -69,7 +69,7 @@ public class StateTest {
 
         JSONObject state = new JSONObject();
         state.put("nickname", "jtester");
-        state.put("status", "online");
+        state.put("statusInterface", "online");
         state.put("age", 32);
 
         final CountDownLatch latch1 = new CountDownLatch(1);
@@ -94,7 +94,7 @@ public class StateTest {
         JSONObject result = (JSONObject) cb4.getResponse();
 
         assertEquals(state.getString("nickname"), result.getString("nickname"));
-        assertEquals(state.getString("status"), result.getString("status"));
+        assertEquals(state.getString("statusInterface"), result.getString("statusInterface"));
         assertEquals(state.getInt("age"), result.getInt("age"));
     }
 }

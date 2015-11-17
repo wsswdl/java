@@ -21,7 +21,7 @@ public class PublishPamSslTest {
 		String channel = "hello";
 		try {
 			JSONObject jso = (JSONObject) pubnub.publish(channel, message);
-			assertEquals(jso.get("status"), 403);
+			assertEquals(jso.get("statusInterface"), 403);
 			assertEquals(jso.get("message"), "Forbidden");
 		} catch (JSONException e) {
 			fail("Not an array response 1");
@@ -35,7 +35,7 @@ public class PublishPamSslTest {
 		String channel = "hello";
 		try {
 			JSONObject jso = (JSONObject) pubnub.publish(channel, message);
-			assertEquals(jso.get("status"), 403);
+			assertEquals(jso.get("statusInterface"), 403);
 			assertEquals(jso.get("message"), "Forbidden");
 		} catch (JSONException e) {
 			fail("Not an array response 1");
@@ -49,7 +49,7 @@ public class PublishPamSslTest {
 		String channel = "hello";
 		try {
 			JSONObject jso = (JSONObject) pubnub.publish(channel, message);
-			assertEquals(jso.get("status"), 403);
+			assertEquals(jso.get("statusInterface"), 403);
 			assertEquals(jso.get("message"), "Forbidden");
 		} catch (JSONException e) {
 			fail("Not an array response 1");
@@ -66,7 +66,7 @@ public class PublishPamSslTest {
 		String channel = "hello";
 		try {
 			JSONObject jso = (JSONObject) pubnub.publish(channel, jsa);
-			assertEquals(jso.get("status"), 403);
+			assertEquals(jso.get("statusInterface"), 403);
 			assertEquals(jso.get("message"), "Forbidden");
 		} catch (JSONException e) {
 			fail("Not an array response 1");
@@ -89,7 +89,7 @@ public class PublishPamSslTest {
 		String channel = "hello";
 		try {
 			JSONObject jso = (JSONObject) pubnub.publish(channel, js);
-			assertEquals(jso.get("status"), 403);
+			assertEquals(jso.get("statusInterface"), 403);
 			assertEquals(jso.get("message"), "Forbidden");
 		} catch (JSONException e) {
 			fail("Not an array response 1");

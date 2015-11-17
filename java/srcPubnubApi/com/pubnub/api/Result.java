@@ -2,81 +2,121 @@ package com.pubnub.api;
 
 public class Result {
 	protected ResultType type;
-	protected int statusCode;
+	protected int code;
 	protected OperationType operation;
-	protected boolean TLSEnabled;
-	protected String uuid;
-	protected String authKey;
-	protected String origin;
-	protected HttpRequest hreq;
-	protected PubnubCore pubnub;
+	protected Config config;
+	protected String connectionId;
+	protected String clientRequest;
+	protected String serverResponse;
 	
-	public PubnubCore getPubnub() {
-		return pubnub;
-	}
-	public void setPubnub(PubnubCore pubnub) {
-		this.pubnub = pubnub;
-	}
-	public HttpRequest getHreq() {
-		return hreq;
-	}
-	public void setHreq(HttpRequest hreq) {
-		this.hreq = hreq;
-	}
+	
 	public ResultType getType() {
 		return type;
 	}
-	public void setType(ResultType type) {
+
+
+	void setType(ResultType type) {
 		this.type = type;
 	}
-	public int getStatusCode() {
-		return statusCode;
+
+
+	public int getCode() {
+		return code;
 	}
-	public void setStatusCode(int statusCode) {
-		this.statusCode = statusCode;
+
+
+	void setCode(int code) {
+		this.code = code;
 	}
+
+
 	public OperationType getOperation() {
 		return operation;
 	}
-	public void setOperation(OperationType operation) {
+
+
+	void setOperation(OperationType operation) {
 		this.operation = operation;
 	}
-	public boolean isTLSEnabled() {
-		return TLSEnabled;
+
+
+	public Config getConfig() {
+		return config;
 	}
-	public void setTLSEnabled(boolean tLSEnabled) {
-		TLSEnabled = tLSEnabled;
+
+
+	void setConfig(Config config) {
+		this.config = config;
 	}
-	public String getUuid() {
-		return uuid;
+
+
+	public String getConnectionId() {
+		return connectionId;
 	}
-	public void setUuid(String uuid) {
-		this.uuid = uuid;
+
+
+	void setConnectionId(String connectionId) {
+		this.connectionId = connectionId;
 	}
-	public String getAuthKey() {
-		return authKey;
+
+
+	public String getClientRequest() {
+		return clientRequest;
 	}
-	public void setAuthKey(String authKey) {
-		this.authKey = authKey;
+
+
+	void setClientRequest(String clientRequest) {
+		this.clientRequest = clientRequest;
 	}
-	public String getOrigin() {
-		return origin;
+
+
+	public String getServerResponse() {
+		return serverResponse;
 	}
-	public void setOrigin(String origin) {
-		this.origin = origin;
+
+
+	void setServerResponse(String serverResponse) {
+		this.serverResponse = serverResponse;
 	}
-	// NSURLRequest
+
+
+	HttpRequest getHreq() {
+		return hreq;
+	}
+
+
+	void setHreq(HttpRequest hreq) {
+		this.hreq = hreq;
+	}
+
+
+	PubnubCore getPubnub() {
+		return pubnub;
+	}
+
+
+	void setPubnub(PubnubCore pubnub) {
+		this.pubnub = pubnub;
+	}
+	
+	public Result() {
+		config = new Config();
+	}
+	
+	HttpRequest hreq;
+	PubnubCore pubnub;
+
 	
 	public String toString() {
 		String s = "";
-		s = s + "Status Code: " + statusCode + "\n";
-		s = s + "Origin: " + origin + "\n";
-		s = s + "TLS: " + TLSEnabled + "\n";
-		s = s + "Result Type: " + type + "\n";
-		s = s + "Operation Type: " + operation + "\n";
-		s = s + "Auth Key: " + authKey + "\n";
-		s = s + "UUID: " + uuid + "\n";
 		
+		s = s + "Code: " + code + "\n";
+		s = s + "Result Type: " + type + "\n";		
+		s = s + "Operation Type: " + operation + "\n";
+		s = s + "Request: " + clientRequest + "\n";
+		s = s + "Response: " + serverResponse + "\n";
+		s = s + config + "\n";
+
 		return s;
 	}
 }

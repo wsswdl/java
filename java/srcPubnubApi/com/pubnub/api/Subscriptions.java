@@ -71,15 +71,15 @@ class Subscriptions {
         return PubnubUtil.hashTableKeysToDelimitedString(items, ",", filter);
     }
 
-    public void invokeConnectCallbackOnItems(Object message) {
-        invokeConnectCallbackOnItems(getItemNames(), message);
+    public void invokeConnectCallbackOnItems(Object message, SubscribeResult result) {
+        invokeConnectCallbackOnItems(getItemNames(), message, result);
     }
 
-    public void invokeDisconnectCallbackOnItems(Object message) {
-        invokeDisconnectCallbackOnItems(getItemNames(), message);
+    public void invokeDisconnectCallbackOnItems(Object message, SubscribeResult result) {
+        invokeDisconnectCallbackOnItems(getItemNames(), message, result);
     }
 
-    public void invokeErrorCallbackOnItems(PubnubError error) {
+    public void invokeErrorCallbackOnItems(PubnubError error, Result result) {
         /*
          * Iterate over all the items and call error callback for items
          */
@@ -88,12 +88,12 @@ class Subscriptions {
             while (itemsElements.hasMoreElements()) {
                 SubscriptionItem _item = (SubscriptionItem) itemsElements.nextElement();
                 _item.error = true;
-                _item.callback.errorCallback(_item.name, error);
+                _item.callback.errorCallback(_item.name, error, result);
             }
         }
     }
 
-    public void invokeConnectCallbackOnItems(String[] items, Object message) {
+    public void invokeConnectCallbackOnItems(String[] items, Object message, SubscribeResult result) {
         synchronized (items) {
             for (int i = 0; i < items.length; i++) {
                 SubscriptionItem _item = (SubscriptionItem) this.items.get(items[i]);
@@ -102,11 +102,11 @@ class Subscriptions {
                         _item.connected = true;
                         if (_item.subscribed == false) {
                             _item.callback.connectCallback(_item.name,
-                                    new JSONArray().put(1).put("Subscribe connected").put(message));
+                                    new JSONArray().put(1).put("Subscribe connected").put(message), result);
                         } else {
                             _item.subscribed = true;
                             _item.callback.reconnectCallback(_item.name,
-                                    new JSONArray().put(1).put("Subscribe reconnected").put(message));
+                                    new JSONArray().put(1).put("Subscribe reconnected").put(message), result);
                         }
                     }
                 }
@@ -114,11 +114,11 @@ class Subscriptions {
         }
     }
 
-    public void invokeReconnectCallbackOnItems(Object message) {
-        invokeReconnectCallbackOnItems(getItemNames(), message);
+    public void invokeReconnectCallbackOnItems(Object message, SubscribeResult result) {
+        invokeReconnectCallbackOnItems(getItemNames(), message, result);
     }
 
-    public void invokeReconnectCallbackOnItems(String[] items, Object message) {
+    public void invokeReconnectCallbackOnItems(String[] items, Object message, SubscribeResult result) {
         synchronized (items) {
             for (int i = 0; i < items.length; i++) {
                 SubscriptionItem _item = (SubscriptionItem) this.items.get(items[i]);
@@ -126,7 +126,7 @@ class Subscriptions {
                     _item.connected = true;
                     if ( _item.error ) {
                         _item.callback.reconnectCallback(_item.name,
-                                new JSONArray().put(1).put("Subscribe reconnected").put(message));
+                                new JSONArray().put(1).put("Subscribe reconnected").put(message), result);
                         _item.error = false;
                     }
                 }
@@ -134,7 +134,7 @@ class Subscriptions {
         }
     }
 
-    public void invokeDisconnectCallbackOnItems(String[] items, Object message) {
+    public void invokeDisconnectCallbackOnItems(String[] items, Object message, SubscribeResult result) {
         synchronized (items) {
             for (int i = 0; i < items.length; i++) {
                 SubscriptionItem _item = (SubscriptionItem) this.items.get(items[i]);
@@ -142,7 +142,7 @@ class Subscriptions {
                     if (_item.connected == true) {
                         _item.connected = false;
                         _item.callback.disconnectCallback(_item.name,
-                                new JSONArray().put(0).put("Subscribe unable to connect").put(message));
+                                new JSONArray().put(0).put("Subscribe unable to connect").put(message), result);
                     }
                 }
             }

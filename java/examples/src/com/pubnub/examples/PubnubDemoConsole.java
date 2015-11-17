@@ -42,15 +42,10 @@ public class PubnubDemoConsole {
         String message = "";
 
         Callback cb = new Callback() {
-            @Override
-            public void successCallback(String channel, Object message) {
-                notifyUser("PUBLISH : " + message);
-            }
-
-            @Override
-            public void errorCallback(String channel, PubnubError error) {
-                notifyUser("PUBLISH : " + error);
-            }
+        	@Override
+        	public void publishCallback(PublishStatus status) {
+                notifyUser("PUBLISH : " + status);	
+        	}
         };
 
         while (true) {
@@ -97,63 +92,14 @@ public class PubnubDemoConsole {
 
         try {
             pubnub.subscribe(channel, new Callback() {
-
-                @Override
-                public void connectCallback(String channel, Object message) {
-                    notifyUser("SUBSCRIBE : CONNECT on channel:" + channel
-                               + " : " + message.getClass() + " : "
-                               + message.toString());
-                }
-
-                @Override
-                public void disconnectCallback(String channel, Object message) {
-                    notifyUser("SUBSCRIBE : DISCONNECT on channel:" + channel
-                               + " : " + message.getClass() + " : "
-                               + message.toString());
-                }
-
-                public void reconnectCallback(String channel, Object message) {
-                    notifyUser("SUBSCRIBE : RECONNECT on channel:" + channel
-                               + " : " + message.getClass() + " : "
-                               + message.toString());
-                }
-
-                @Override
-                public void successCallback(String channel, Object message) {
-                    notifyUser("SUBSCRIBE : " + channel + " : "
-                               + message.getClass() + " : " + message.toString());
-
-                }
-
-                @Override
-                public void successCallback(String channel, Object message, String timetoken) {
-                    notifyUser("SUBSCRIBE : [TT - " + timetoken + "] " + channel + " : "
-                               + message.getClass() + " : " + message.toString());
-
-                }
-
-                @Override
-                public void errorCallback(String channel, PubnubError error) {
-
-                    /*
-
-                    # Switch on error code, see PubnubError.java
-
-                    if (error.errorCode == 112) {
-                        # Bad Auth Key!
-                        unsubscribe, get a new auth key, subscribe, etc...
-                    } else if (error.errorCode == 113) {
-                        # Need to set Auth Key !
-                        unsubscribe, set auth, resubscribe
-                    }
-
-                    */
-
-                    notifyUser("SUBSCRIBE : ERROR on channel " + channel
-                               + " : " + error.toString());
-                    if (error.errorCode == PubnubError.PNERR_TIMEOUT)
-                        pubnub.disconnectAndResubscribe();
-                }
+            	@Override
+            	public void subscribeCallback(SubscribeResult result) {
+            		if (result.getType() == ResultType.STATUS) {
+            			notifyUser((SubscribeStatus)result);
+            		} else {
+            			notifyUser(result);
+            		}
+            	}
             });
 
         } catch (Exception e) {
