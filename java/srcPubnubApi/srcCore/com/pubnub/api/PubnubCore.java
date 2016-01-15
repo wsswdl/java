@@ -363,9 +363,11 @@ abstract class PubnubCore implements PubnubInterface {
 		boolean channelsOk;
 		boolean groupsOk;
 
+		/*
 		if (!(args.get("callback") instanceof Callback) || args.get("callback") == null) {
 			throw new PubnubException("Invalid Callback");
 		}
+		*/
 
 		String[] _channels = (String[]) args.get("channels");
 		String[] _groups = (String[]) args.get("groups");

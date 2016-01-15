@@ -40,6 +40,7 @@ public abstract class Callback {
 		
 	}
 	
+	
 	public void subscribeCallback(SubscribeStatus status) {
 		
 	}

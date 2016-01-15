@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Random;
 
 
@@ -888,6 +889,8 @@ abstract class PubnubCoreAsync extends PubnubCore implements PubnubAsyncInterfac
 
         Hashtable args = new Hashtable();
 
+        if (callback == null) callback = this.globalCallback;
+        
         args.put("channels", channels);
         args.put("callback", callback);
         args.put("timetoken", timetoken);
@@ -900,6 +903,11 @@ abstract class PubnubCoreAsync extends PubnubCore implements PubnubAsyncInterfac
         subscribe(channels, callback, String.valueOf(timetoken));
     }
 
+    public void subscribe(String channel)
+            throws PubnubException {
+        subscribe(channel, null, "0");
+    }
+    
     public void subscribe(String channel, Callback callback)
             throws PubnubException {
         subscribe(channel, callback, "0");
@@ -973,7 +981,9 @@ abstract class PubnubCoreAsync extends PubnubCore implements PubnubAsyncInterfac
     public void subscribe(String[] channels, String[] groups, Callback callback, String timetoken)
             throws PubnubException {
         Hashtable args = new Hashtable();
-
+        
+        if (callback == null) callback = this.globalCallback;
+        
         args.put("channels", channels);
         args.put("groups", groups);
         args.put("callback", callback);
@@ -1336,8 +1346,32 @@ abstract class PubnubCoreAsync extends PubnubCore implements PubnubAsyncInterfac
         }
     }
 
+    List listeners = new ArrayList();
+    
+    Callback globalCallback = new Callback(){
+    	public void subscribeCallback(SubscribeResult result) {
+    		StreamResult res = new StreamResult(result);
+    		for (int i = 0; i < listeners.size(); i++) {
+    			StreamListener listener = (StreamListener)listeners.get(i);
+    			listener.streamResult(res);
+    		}
+    	}
+    };
+    
+    public void addStreamListener(StreamListener listener) {
+    	listeners.add(listener);
+    }
+    
+    public void removeAllListeners() {
+    	listeners.removeAll(null);
+    }
+    
     private void invokeSubscribeCallback(String channel, Callback callback, Object message, String timetoken,
                                          HttpRequest hreq, SubscribeResult result) throws JSONException {
+    	
+    	if (callback == null) {
+    		callback = this.globalCallback;
+    	}
         if (CIPHER_KEY.length() > 0
                 && !channel
                 .endsWith(PRESENCE_SUFFIX)) {

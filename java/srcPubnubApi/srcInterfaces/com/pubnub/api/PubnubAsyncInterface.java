@@ -745,6 +745,15 @@ interface PubnubAsyncInterface {
      * Listen for a message on a channel.
      *
      * @param channel  name
+     * @throws PubnubException
+     */
+    public void subscribe(String channel) throws PubnubException;
+    
+    
+    /**
+     * Listen for a message on a channel.
+     *
+     * @param channel  name
      * @param callback to call
      * @throws PubnubException
      */
