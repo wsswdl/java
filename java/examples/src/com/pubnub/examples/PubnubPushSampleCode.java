@@ -13,7 +13,6 @@ import com.pubnub.api.PnMessage;
 import com.pubnub.api.Pubnub;
 import com.pubnub.api.PubnubError;
 import com.pubnub.api.PubnubException;
-import com.pubnub.api.PubnubException;
 
 public class PubnubPushSampleCode {
 
