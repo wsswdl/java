@@ -1,11 +1,16 @@
 package com.pubnub.domain;
 
+import lombok.Data;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@Data
 public class GlobalHereNowData {
-    int occupancy;
+    private int occupancy;
+    private int totalOccupancy;
+    private GlobalHereNowUuidData[] uuids;
+
     public int getOccupancy() {
         return occupancy;
     }
@@ -18,8 +23,8 @@ public class GlobalHereNowData {
         return uuids;
     }
 
-    int totalOccupancy;
-    GlobalHereNowUuidData[] uuids;
+
+
     
     
     public String toString() {

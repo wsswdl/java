@@ -2,6 +2,9 @@ package com.pubnub.api.publish;
 
 import java.util.Hashtable;
 
+import com.pubnub.api.Pubnub;
+import com.pubnub.api.PubnubUtil;
+import com.pubnub.callbacks.PublishCallback;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -16,7 +19,7 @@ public class PubnubPublishAsync implements PubnubPublishAsyncInterface {
     PubnubPublishAsync pns = this;
     private boolean storeInHistory;
     
-    PubnubPublishAsync(Pubnub pubnub) {
+    public PubnubPublishAsync(Pubnub pubnub) {
         this.pubnub = pubnub;
     }
     

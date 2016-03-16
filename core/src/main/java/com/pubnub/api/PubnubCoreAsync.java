@@ -1,5 +1,15 @@
 package com.pubnub.api;
 
+import com.pubnub.api.channelGroup.PubnubCGAsync;
+import com.pubnub.api.hereNow.PubnubHereNowAsync;
+import com.pubnub.api.history.PubnubHistoryAsync;
+import com.pubnub.api.pam.PubnubPamAsync;
+import com.pubnub.api.publish.PubnubPublishAsync;
+import com.pubnub.api.state.PubnubAsyncState;
+import com.pubnub.api.subscribe.PubnubSubscribe;
+import com.pubnub.api.unsubscribe.com.pubnub.api.PubnubAsyncUnsubscribe;
+import com.pubnub.api.whereNow.PubnubWhereNowAsync;
+import com.pubnub.domain.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -261,19 +271,19 @@ abstract class PubnubCoreAsync extends PubnubCore {
         subscribe(args);
     }
 
-    void whereNow(final String uuid, Callback callback) {
+    public void whereNow(final String uuid, Callback callback) {
         _whereNow(uuid, callback, false);
     }
 
-    void whereNow(Callback callback) {
+    public void whereNow(Callback callback) {
         whereNow(this.UUID, callback);
     }
 
-    void setState(String channel, String uuid, JSONObject state, Callback callback) {
+    public void setState(String channel, String uuid, JSONObject state, Callback callback) {
         _setState(channelSubscriptions, PubnubUtil.urlEncode(channel), null, uuid, state, callback, false);
     }
 
-    void channelGroupSetState(String group, String uuid, JSONObject state, Callback callback) {
+    public void channelGroupSetState(String group, String uuid, JSONObject state, Callback callback) {
         _setState(channelSubscriptions, "", group, uuid, state, callback, false);
     }
 
@@ -282,7 +292,7 @@ abstract class PubnubCoreAsync extends PubnubCore {
         _setState(sub, channel, group, uuid, state, callback, true);
     }
 
-    void getState(String channel, String uuid, Callback callback) {
+    public void getState(String channel, String uuid, Callback callback) {
         _getState(channel, uuid, callback, false);
     }
 
@@ -290,27 +300,27 @@ abstract class PubnubCoreAsync extends PubnubCore {
         _channelGroupListGroups(null, callback, false);
     }
 
-    void channelGroupListGroups(Callback callback) {
+    public void channelGroupListGroups(Callback callback) {
         channelGroupListGroups(null, callback);
     }
 
-    void channelGroupListChannels(String group, Callback callback) {
+    public void channelGroupListChannels(String group, Callback callback) {
         _channelGroupListChannels(group, callback, false);
     }
 
-    void channelGroupAddChannel(String group, String channel, Callback callback) {
+    public void channelGroupAddChannel(String group, String channel, Callback callback) {
         channelGroupUpdate("add", group, new String[] { channel }, callback);
     }
 
-    void channelGroupAddChannel(String group, String[] channels, Callback callback) {
+    public void channelGroupAddChannel(String group, String[] channels, Callback callback) {
         channelGroupUpdate("add", group, channels, callback);
     }
 
-    void channelGroupRemoveChannel(String group, String channel, Callback callback) {
+    public void channelGroupRemoveChannel(String group, String channel, Callback callback) {
         channelGroupUpdate("remove", group, new String[] { channel }, callback);
     }
 
-    void channelGroupRemoveChannel(String group, String[] channels, Callback callback) {
+    public void channelGroupRemoveChannel(String group, String[] channels, Callback callback) {
         channelGroupUpdate("remove", group, channels, callback);
     }
 
@@ -330,11 +340,11 @@ abstract class PubnubCoreAsync extends PubnubCore {
         hereNow(null, null, state, uuids, callback);
     }
 
-    void hereNow(final String channel, boolean state, boolean uuids, Callback callback) {
+    public void hereNow(final String channel, boolean state, boolean uuids, Callback callback) {
         hereNow(new String[] { channel }, null, state, uuids, callback);
     }
 
-    void channelGroupHereNow(String group, Callback callback) {
+    public void channelGroupHereNow(String group, Callback callback) {
         channelGroupHereNow(group, false, true, callback);
     }
 
@@ -346,7 +356,7 @@ abstract class PubnubCoreAsync extends PubnubCore {
         hereNow(null, groups, state, uuids, callback);
     }
 
-    void hereNow(String[] channels, String[] channelGroups, boolean state, boolean uuids, Callback callback) {
+    public void hereNow(String[] channels, String[] channelGroups, boolean state, boolean uuids, Callback callback) {
         _hereNow(channels, channelGroups, state, uuids, callback, false);
     }
 
@@ -473,7 +483,7 @@ abstract class PubnubCoreAsync extends PubnubCore {
         _request(hreq, nonSubscribeManager);
     }
 
-    void unsubscribe(String[] channels, Callback callback) {
+    public void unsubscribe(String[] channels, Callback callback) {
         for (int i = 0; i < channels.length; i++) {
             String channel = channels[i];
             channelSubscriptions.removeItem(channel);
@@ -556,7 +566,7 @@ abstract class PubnubCoreAsync extends PubnubCore {
     }
 
 
-    void channelGroupUnsubscribeAllGroups(Callback callback) {
+    public void channelGroupUnsubscribeAllGroups(Callback callback) {
         String[] groups = channelGroupSubscriptions.getItemNames();
 
         for (int i = 0; i < groups.length; i++) {
@@ -568,13 +578,13 @@ abstract class PubnubCoreAsync extends PubnubCore {
         disconnectAndResubscribe();
     }
 
-    protected void subscribe(Hashtable args, Callback callback) throws PubnubException {
+    public void subscribe(Hashtable args, Callback callback) throws PubnubException {
         args.put("callback", callback);
 
         subscribe(args);
     }
 
-    protected void subscribe(Hashtable args) throws PubnubException {
+    public void subscribe(Hashtable args) throws PubnubException {
 
         keepOnlyPluralSubscriptionItems(args);
 
@@ -991,25 +1001,25 @@ abstract class PubnubCoreAsync extends PubnubCore {
     Callback globalCallback = new Callback(){
 
         @Override
-        void successCallback(String channel, Object response, Result result) {
+        public void successCallback(String channel, Object response, Result result) {
             StreamResult res = new StreamResult((SubscribeResult)result);
-            res.data.channel = channel;
+            res.getData().channel = channel;
             for (StreamListener listener : listeners.values()) {
                 listener.streamResult(res);
             }
         }
 
         @Override
-        void errorCallback(String channel, PubnubError error, Result result) {
+        public void errorCallback(String channel, PubnubError error, Result result) {
 
         }
 
         @Override
         void connectCallback(String channel, Object response, SubscribeResult result) {
             StreamStatus status = new StreamStatus(new StreamResult(result));
-            status.isError = false;
-            status.category = StatusCategory.CONNECT;
-            status.data.channel = channel;
+            status.setError(false);
+            status.setCategory(StatusCategory.CONNECT);
+            status.getData().setChannel(channel);
             statusOnAll(status);
         }
 
@@ -1043,9 +1053,9 @@ abstract class PubnubCoreAsync extends PubnubCore {
             }
         }
         public void subscribeCallback(StreamStatus status) {
-            status.isError = false;
-            status.type = ResultType.STATUS;
-            status.wasAutoRetried = true;
+            status.setError(false);
+            status.setType(ResultType.STATUS) ;
+            status.setWasAutoRetried(true);
             statusOnAll(status);
         }
 

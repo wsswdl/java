@@ -1,5 +1,7 @@
 package com.pubnub.api.hereNow;
 
+import com.pubnub.api.Pubnub;
+import com.pubnub.callbacks.HereNowCallback;
 import org.json.JSONObject;
 
 public class PubnubHereNowAsync implements PubnubHereNowAsyncInterface {
@@ -13,7 +15,7 @@ public class PubnubHereNowAsync implements PubnubHereNowAsyncInterface {
     PubnubHereNowAsync pns = this;
 
     
-    PubnubHereNowAsync(Pubnub pubnub) {
+    public PubnubHereNowAsync(Pubnub pubnub) {
         this.pubnub = pubnub;
     }
     

@@ -1,5 +1,8 @@
 package com.pubnub.callbacks;
 
+import com.pubnub.api.Callback;
+import com.pubnub.api.PubnubError;
+import com.pubnub.domain.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -8,7 +11,7 @@ public abstract class ChannelGroupHereNowCallback extends Callback {
     public abstract void result(ChannelGroupHereNowResult result);
     
     @Override
-    void successCallback(String channel, Object message, Result result) {
+    public void successCallback(String channel, Object message, Result result) {
         ChannelGroupHereNowResult hresult = (ChannelGroupHereNowResult)result;
         System.out.println(message);
         try {
@@ -32,7 +35,7 @@ public abstract class ChannelGroupHereNowCallback extends Callback {
     }
     
     @Override
-    void errorCallback(String channel, PubnubError error, Result result) {
+    public void errorCallback(String channel, PubnubError error, Result result) {
         ErrorStatus status = fillErrorStatusDetails(error, result);
         status.operation = OperationType.HERE_NOW_FOR_CHANNEL_GROUP;
         status.errorData.channels = new String[]{channel};

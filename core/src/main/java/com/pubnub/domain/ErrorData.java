@@ -1,5 +1,9 @@
 package com.pubnub.domain;
 
+import com.pubnub.api.PubnubUtil;
+import lombok.Data;
+
+@Data
 public class ErrorData {
 
     String[] channels;

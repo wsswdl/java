@@ -1,24 +1,21 @@
 package com.pubnub.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
 public class WhereNowResult extends Result {
-    WhereNowData data;
+    private WhereNowData data;
 
     public WhereNowResult() {
         data = new WhereNowData();
     }
-    
-    public WhereNowData getData() {
-        return data;
-    }
 
-    void setData(WhereNowData data) {
-        this.data = data;
-    }
 
     public String toString() {
         String s = super.toString();
         s = s + data + "\n";
         return s;
-        
+
     }
 }

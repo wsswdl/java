@@ -1,5 +1,9 @@
 package com.pubnub.api.subscribe;
 
+import com.pubnub.api.Pubnub;
+import com.pubnub.api.PubnubException;
+import com.pubnub.api.PubnubUtil;
+
 import java.util.Hashtable;
 
 public class PubnubSubscribe implements PubnubSubscribeInterface {
@@ -66,7 +70,7 @@ public class PubnubSubscribe implements PubnubSubscribeInterface {
     }
     
     
-    PubnubSubscribe(Pubnub pubnub) {
+    public PubnubSubscribe(Pubnub pubnub) {
         this.pubnub = pubnub;
     }
     

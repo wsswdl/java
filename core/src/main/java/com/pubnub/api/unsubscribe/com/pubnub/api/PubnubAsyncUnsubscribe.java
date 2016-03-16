@@ -1,5 +1,8 @@
 package com.pubnub.api.unsubscribe.com.pubnub.api;
 
+import com.pubnub.api.Pubnub;
+import com.pubnub.callbacks.UnsubscribeCallback;
+
 public class PubnubAsyncUnsubscribe implements PubnubUnsubscribeAsyncInterface {
 
 
@@ -19,9 +22,9 @@ public class PubnubAsyncUnsubscribe implements PubnubUnsubscribeAsyncInterface {
 
     
     PubnubAsyncUnsubscribe pns = this;
-    
-    
-    PubnubAsyncUnsubscribe(Pubnub pubnub) {
+
+
+    public PubnubAsyncUnsubscribe(Pubnub pubnub) {
         this.pubnub = pubnub;
     }
     

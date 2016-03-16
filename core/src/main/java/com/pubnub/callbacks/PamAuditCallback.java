@@ -1,22 +1,25 @@
 package com.pubnub.callbacks;
 
-import com.pubnub.api.ErrorStatus;
+import com.pubnub.api.Callback;
 import com.pubnub.api.PubnubError;
-import com.pubnub.api.Result;
+import com.pubnub.domain.ErrorStatus;
+import com.pubnub.domain.OperationType;
+import com.pubnub.domain.PamAuditResult;
+import com.pubnub.domain.Result;
 
 public abstract class PamAuditCallback extends Callback {
     public abstract void status(ErrorStatus status);
     public abstract void result(PamAuditResult result);
     
     @Override
-    void successCallback(String channel, Object message, Result result) {
+    public void successCallback(String channel, Object message, Result result) {
         
     }
     
     @Override
-    void errorCallback(String channel, PubnubError error, Result result) {
+    public void errorCallback(String channel, PubnubError error, Result result) {
         ErrorStatus status = fillErrorStatusDetails(error, result);
-        status.operation = OperationType.PAM_AUDIT;
+        status.setOperation(OperationType.PAM_AUDIT);
         status(status);          
     }
 }

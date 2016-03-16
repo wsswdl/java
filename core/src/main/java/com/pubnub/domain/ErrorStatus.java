@@ -1,36 +1,35 @@
 package com.pubnub.domain;
 
+import lombok.Data;
+
+@Data
 public class ErrorStatus extends Status {
 
     ErrorData errorData = new ErrorData();
     
     @Override
     public void retry() {
-        pubnub.sendNonSubscribeRequest(hreq);
+        this.getPubnub().sendNonSubscribeRequest(this.getHreq());
     }
 
-    public ErrorData getErrorData() {
-        return errorData;
-    }
-    
     ErrorStatus() {
         super();
-        this.type = ResultType.STATUS;
+        this.setType(ResultType.STATUS);
     }
 
-    ErrorStatus(Result result) {
+    public ErrorStatus(Result result) {
         super(result);
         errorData = new ErrorData();
         this.isError = true;
-        this.code = result.code;
-        this.operation = result.operation;
-        this.config = result.config;
-        this.connectionId = result.connectionId;
-        this.clientRequest = result.clientRequest;
-        this.serverResponse = result.serverResponse;
-        this.hreq = result.hreq;
-        this.pubnub = result.pubnub;
-        this.type = ResultType.STATUS;
+        this.setCode(result.getCode());
+        this.setOperation(result.getOperation());
+        this.setConfig(result.getConfig());
+        this.setConnectionId(result.getConnectionId());
+        this.setClientRequest(result.getClientRequest());
+        this.setServerResponse(result.getServerResponse());
+        this.setHreq(result.getHreq());
+        this.setPubnub(result.getPubnub());
+        this.setType(ResultType.STATUS);
     }
     
     ErrorStatus(Status status) {
@@ -40,12 +39,4 @@ public class ErrorStatus extends Status {
         this.category = status.category;
         errorData = new ErrorData();
     }
-    
-    public String toString()    {
-        String s = "";
-        s += super.toString() + "\n";
-        s += errorData.toString() + "\n";
-        return s;
-    }
-
 }

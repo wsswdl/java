@@ -1,5 +1,8 @@
 package com.pubnub.api.whereNow;
 
+import com.pubnub.api.Pubnub;
+import com.pubnub.callbacks.WhereNowCallback;
+
 public class PubnubWhereNowAsync implements PubnubWhereNowAsyncInterface {
 
     private Pubnub pubnub;
@@ -10,7 +13,7 @@ public class PubnubWhereNowAsync implements PubnubWhereNowAsyncInterface {
     PubnubWhereNowAsync pns = this;
     
     
-    PubnubWhereNowAsync(Pubnub pubnub) {
+    public PubnubWhereNowAsync(Pubnub pubnub) {
         this.pubnub = pubnub;
     }
     

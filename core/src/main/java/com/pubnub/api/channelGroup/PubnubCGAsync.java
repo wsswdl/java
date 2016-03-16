@@ -1,21 +1,26 @@
 package com.pubnub.api.channelGroup;
 
+import com.pubnub.api.Pubnub;
+import com.pubnub.callbacks.ChannelGroupChangeCallback;
+import com.pubnub.callbacks.GroupAuditCallback;
+import com.pubnub.callbacks.GroupChannelsAuditCallback;
+
 public class PubnubCGAsync implements PubnubCGAsyncInterface{
 
     final Pubnub pubnub;
     
     ChannelGroupChangeCallback channelGroupChangeCallback;
     GroupAuditCallback groupAuditCallback;
-    GroupChannelsAuditCallback  groupChannelsAuditCallback;
+    GroupChannelsAuditCallback groupChannelsAuditCallback;
     
     String channel;
     String[] channels;
     String channelGroup;
     
     PubnubCGAsync pns = this;
-    
-    
-    PubnubCGAsync(Pubnub pubnub) {
+
+
+    public PubnubCGAsync(Pubnub pubnub) {
         this.pubnub = pubnub;
     }
     
@@ -25,7 +30,7 @@ public class PubnubCGAsync implements PubnubCGAsyncInterface{
     public PubnubCGAsyncAddChannelInterface addChannel() {
         
         
-        PubnubCGAsyncAddChannelEnd apiEnd = new PubnubCGAsyncAddChannelEnd(){
+        final PubnubCGAsyncAddChannelEnd apiEnd = new PubnubCGAsyncAddChannelEnd(){
 
             @Override
             public void add() {
@@ -39,8 +44,8 @@ public class PubnubCGAsync implements PubnubCGAsyncInterface{
             }
             
         };
-        
-        PubnubCGAsyncAddChannelApiStateChannel apiChannel = 
+
+        final PubnubCGAsyncAddChannelApiStateChannel apiChannel =
                 new PubnubCGAsyncAddChannelApiStateChannel() {
 
                     @Override
@@ -56,9 +61,9 @@ public class PubnubCGAsync implements PubnubCGAsyncInterface{
                     }
             
         };
-        
-        
-        PubnubCGAsyncAddChannelApiStateChannelGroup apiChannelGroup = 
+
+
+        final PubnubCGAsyncAddChannelApiStateChannelGroup apiChannelGroup =
                 new PubnubCGAsyncAddChannelApiStateChannelGroup(){
 
                     @Override
@@ -68,8 +73,8 @@ public class PubnubCGAsync implements PubnubCGAsyncInterface{
                     }
             
         };
-        
-        PubnubCGAsyncAddChannelInterface apiAddChannel = new PubnubCGAsyncAddChannelInterface(){
+
+        final PubnubCGAsyncAddChannelInterface apiAddChannel = new PubnubCGAsyncAddChannelInterface(){
 
             @Override
             public PubnubCGAsyncAddChannelApiStateChannelGroup callback(ChannelGroupChangeCallback callback) {
@@ -84,8 +89,8 @@ public class PubnubCGAsync implements PubnubCGAsyncInterface{
     
     @Override
     public PubnubCGAsyncRemoveChannelInterface removeChannel() {
-        
-        PubnubCGAsyncRemoveChannelEnd apiEnd = new PubnubCGAsyncRemoveChannelEnd() {
+
+        final PubnubCGAsyncRemoveChannelEnd apiEnd = new PubnubCGAsyncRemoveChannelEnd() {
 
             @Override
             public void remove() {
@@ -98,8 +103,8 @@ public class PubnubCGAsync implements PubnubCGAsyncInterface{
             }
             
         };
-        
-        PubnubCGAsyncRemoveChannelApiStateChannel apiChannel = 
+
+        final PubnubCGAsyncRemoveChannelApiStateChannel apiChannel =
                 new PubnubCGAsyncRemoveChannelApiStateChannel() {
 
                     @Override
@@ -115,8 +120,8 @@ public class PubnubCGAsync implements PubnubCGAsyncInterface{
                     }
             
         };
-        
-        PubnubCGAsyncRemoveChannelApiStateChannelGroup apiChannelGroup = 
+
+        final PubnubCGAsyncRemoveChannelApiStateChannelGroup apiChannelGroup =
                 new PubnubCGAsyncRemoveChannelApiStateChannelGroup() {
 
                     @Override
@@ -126,8 +131,8 @@ public class PubnubCGAsync implements PubnubCGAsyncInterface{
                     }
             
         };
-        
-        PubnubCGAsyncRemoveChannelInterface apiRemoveChannel = new PubnubCGAsyncRemoveChannelInterface(){
+
+        final PubnubCGAsyncRemoveChannelInterface apiRemoveChannel = new PubnubCGAsyncRemoveChannelInterface(){
 
             @Override
             public PubnubCGAsyncRemoveChannelApiStateChannelGroup callback(ChannelGroupChangeCallback callback) {
@@ -142,8 +147,8 @@ public class PubnubCGAsync implements PubnubCGAsyncInterface{
     
     @Override
     public PubnubCGAsyncRemoveGroupInterface removeGroup() {
-        
-        PubnubCGAsyncRemoveGroupEnd apiEnd = new PubnubCGAsyncRemoveGroupEnd() {
+
+        final PubnubCGAsyncRemoveGroupEnd apiEnd = new PubnubCGAsyncRemoveGroupEnd() {
 
             @Override
             public void remove() {
@@ -157,8 +162,8 @@ public class PubnubCGAsync implements PubnubCGAsyncInterface{
             }
             
         };
-        
-        PubnubCGAsyncRemoveGroupApiStateChannelGroup apiChannelGroup =
+
+        final PubnubCGAsyncRemoveGroupApiStateChannelGroup apiChannelGroup =
                 new PubnubCGAsyncRemoveGroupApiStateChannelGroup() {
 
                     @Override
@@ -168,8 +173,8 @@ public class PubnubCGAsync implements PubnubCGAsyncInterface{
                     }
             
         };
-        
-        PubnubCGAsyncRemoveGroupInterface apiRemoveGroup =
+
+        final PubnubCGAsyncRemoveGroupInterface apiRemoveGroup =
                 new PubnubCGAsyncRemoveGroupInterface(){
 
                     @Override
@@ -185,8 +190,8 @@ public class PubnubCGAsync implements PubnubCGAsyncInterface{
     
     @Override
     public PubnubCGAsyncListChannelsInterface listChannels() {
-        
-        PubnubCGAsyncListChannelsEnd apiEnd = new PubnubCGAsyncListChannelsEnd() {
+
+        final PubnubCGAsyncListChannelsEnd apiEnd = new PubnubCGAsyncListChannelsEnd() {
 
             @Override
             public void list() {
@@ -194,8 +199,8 @@ public class PubnubCGAsync implements PubnubCGAsyncInterface{
             }
             
         };
-        
-        PubnubCGAsyncListChannelsApiStateChannelGroup apiChannelGroup = 
+
+        final PubnubCGAsyncListChannelsApiStateChannelGroup apiChannelGroup =
                 new PubnubCGAsyncListChannelsApiStateChannelGroup() {
 
                     @Override
@@ -205,8 +210,8 @@ public class PubnubCGAsync implements PubnubCGAsyncInterface{
                     }
             
         };
-        
-        PubnubCGAsyncListChannelsInterface apiListChannels = 
+
+        final PubnubCGAsyncListChannelsInterface apiListChannels =
                 new PubnubCGAsyncListChannelsInterface() {
 
                     @Override
@@ -225,7 +230,7 @@ public class PubnubCGAsync implements PubnubCGAsyncInterface{
 
                 @Override
                 public void list() {
-                    pubnub.channelGroupListGroups(pns.groupAuditCallback);   
+                    pubnub.channelGroupListGroups(pns.groupAuditCallback);
                 }
         
     };

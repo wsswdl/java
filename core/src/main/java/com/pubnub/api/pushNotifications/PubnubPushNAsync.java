@@ -1,5 +1,8 @@
 package com.pubnub.api.pushNotifications;
 
+import com.pubnub.api.Pubnub;
+import com.pubnub.callbacks.PushNotificationsChangeCallback;
+import com.pubnub.callbacks.PushNotificationsChannelsAuditCallback;
 import org.json.JSONObject;
 
 public class PubnubPushNAsync implements PubnubPushNAsyncInterface {

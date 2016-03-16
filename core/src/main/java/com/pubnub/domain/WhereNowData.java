@@ -1,16 +1,8 @@
 package com.pubnub.domain;
 
+import lombok.Data;
+
+@Data
 public class WhereNowData {
-    String[] channels;
-    public String[] getChannels() {
-        return channels;
-    }
-
-    public String toString() {
-
-        String s = "";
-        s = s + "Channels: " + PubnubUtil.joinString(channels, ", ") + "\n";
-
-        return s;
-    }
+    private String[] channels;
 }

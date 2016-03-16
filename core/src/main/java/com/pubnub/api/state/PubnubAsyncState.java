@@ -25,17 +25,17 @@ public class PubnubAsyncState implements PubnubStateAsyncInterface {
 
     
     PubnubAsyncState pns = this;
-    
-    
-    PubnubAsyncState(Pubnub pubnub) {
+
+
+    public PubnubAsyncState(Pubnub pubnub) {
         this.pubnub = pubnub;
     }
     
     
     @Override
     public PubnubStateAsyncApiGetC get() {
-        
-        PubnubStateAsyncApiGetEnd apiGetEnd = new PubnubStateAsyncApiGetEnd() {
+
+        final PubnubStateAsyncApiGetEnd apiGetEnd = new PubnubStateAsyncApiGetEnd() {
 
             @Override
             public void get() {
@@ -47,8 +47,8 @@ public class PubnubAsyncState implements PubnubStateAsyncInterface {
             }
             
         };
-        
-        PubnubStateAsyncApiGetCCb apiGetCCb = new PubnubStateAsyncApiGetCCb() {
+
+        final PubnubStateAsyncApiGetCCb apiGetCCb = new PubnubStateAsyncApiGetCCb() {
 
             @Override
             public PubnubStateAsyncApiGetEnd callback(ChannelStateCallback callback) {
@@ -57,8 +57,8 @@ public class PubnubAsyncState implements PubnubStateAsyncInterface {
             }
             
         };
-        
-        PubnubStateAsyncApiGetCgCb apiGetCgCb = new PubnubStateAsyncApiGetCgCb() {
+
+        final PubnubStateAsyncApiGetCgCb apiGetCgCb = new PubnubStateAsyncApiGetCgCb() {
 
             @Override
             public PubnubStateAsyncApiGetEnd callback(ChannelGroupStateCallback callback) {
@@ -69,7 +69,7 @@ public class PubnubAsyncState implements PubnubStateAsyncInterface {
         };
         
         
-        PubnubStateAsyncApiGetCUuid apiGetCUuid = new PubnubStateAsyncApiGetCUuid() {
+        final PubnubStateAsyncApiGetCUuid apiGetCUuid = new PubnubStateAsyncApiGetCUuid() {
 
             @Override
             public PubnubStateAsyncApiGetCCb uuid(String uuid) {
@@ -78,8 +78,8 @@ public class PubnubAsyncState implements PubnubStateAsyncInterface {
             }
             
         };
-        
-        PubnubStateAsyncApiGetCgUuid apiGetCgUuid = new PubnubStateAsyncApiGetCgUuid() {
+
+        final PubnubStateAsyncApiGetCgUuid apiGetCgUuid = new PubnubStateAsyncApiGetCgUuid() {
 
             @Override
             public PubnubStateAsyncApiGetCgCb uuid(String uuid) {
@@ -88,9 +88,9 @@ public class PubnubAsyncState implements PubnubStateAsyncInterface {
             }
             
         };
-        
-        
-        PubnubStateAsyncApiGetC apiGet = new PubnubStateAsyncApiGetC() {
+
+
+        final PubnubStateAsyncApiGetC apiGet = new PubnubStateAsyncApiGetC() {
 
             @Override
             public PubnubStateAsyncApiGetCUuid channel(String channel) {

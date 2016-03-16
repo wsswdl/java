@@ -1,0 +1,10 @@
+com/pubnub/api/channelGroup/PubnubCGAsyncListGroupsInterface.class
+com/pubnub/api/channelGroup/PubnubCGAsyncRemoveGroupInterface.class
+com/pubnub/api/channelGroup/PubnubCGAsyncRemoveChannelEnd.class
+com/pubnub/api/channelGroup/PubnubCGAsyncInterface.class
+com/pubnub/api/channelGroup/PubnubCGAsyncListChannelsInterface.class
+com/pubnub/api/channelGroup/PubnubCGAsyncRemoveChannelApiStateChannel.class
+com/pubnub/api/pam/PubnubPamAsyncRevokeApiStateCGOptions.class
+com/pubnub/api/channelGroup/PubnubCGAsyncRemoveChannelApiStateChannelGroup.class
+com/pubnub/api/channelGroup/PubnubCGAsyncAddChannelInterface.class
+com/pubnub/api/channelGroup/PubnubCGAsyncRemoveChannelInterface.class

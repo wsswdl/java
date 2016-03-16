@@ -15,7 +15,7 @@ import java.util.Vector;
 class PubnubUtilCore {
     
     
-    static String[] getCopyOfStringArray(String[] a) {
+    public static String[] getCopyOfStringArray(String[] a) {
         if (a == null)
             return a;
         String[] b = new String[a.length];
@@ -24,8 +24,8 @@ class PubnubUtilCore {
         }
         return b;
     }
-    
-    static String[] concatStringArrays(String[] a, String[] b) {
+
+    public static String[] concatStringArrays(String[] a, String[] b) {
         if ( a == null && b == null)
             return null;
         if ( b == null) 
@@ -44,7 +44,7 @@ class PubnubUtilCore {
     }
     
 
-    static void addToHash(Hashtable h, String name, Object object) {
+    public static void addToHash(Hashtable h, String name, Object object) {
         if (object != null) {
             h.put(name, object);
         }

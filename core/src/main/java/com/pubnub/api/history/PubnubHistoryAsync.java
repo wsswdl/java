@@ -1,5 +1,7 @@
 package com.pubnub.api.history;
 
+import com.pubnub.api.Pubnub;
+import com.pubnub.callbacks.HistoryCallback;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -18,7 +20,7 @@ public class PubnubHistoryAsync implements PubnubHistoryAsyncInterface {
     PubnubHistoryAsync pns = this;
     private boolean storeInHistory;
     
-    PubnubHistoryAsync(Pubnub pubnub) {
+    public PubnubHistoryAsync(Pubnub pubnub) {
         this.pubnub = pubnub;
     }
     

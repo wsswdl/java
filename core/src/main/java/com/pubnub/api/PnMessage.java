@@ -2,6 +2,7 @@ package com.pubnub.api;
 
 import java.util.Hashtable;
 
+import com.pubnub.callbacks.PublishCallback;
 import org.json.JSONException;
 import org.json.JSONObject;
 

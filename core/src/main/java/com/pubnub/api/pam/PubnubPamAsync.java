@@ -22,7 +22,7 @@ public class PubnubPamAsync implements PubnubPamAsyncInterface {
     PubnubPamAsync pns = this;
     
     
-    PubnubPamAsync(Pubnub pubnub) {
+    public PubnubPamAsync(Pubnub pubnub) {
         this.pubnub = pubnub;
     }
     
@@ -56,7 +56,7 @@ public class PubnubPamAsync implements PubnubPamAsyncInterface {
     @Override
     public PubnubPamAsyncGrantInterface grant() {
         
-        PubnubPamAsyncGrantApiStateCGOptions apiGrantCgOptions = new PubnubPamAsyncGrantApiStateCGOptions(){
+        final PubnubPamAsyncGrantApiStateCGOptions apiGrantCgOptions = new PubnubPamAsyncGrantApiStateCGOptions(){
 
             @Override
             public void invoke() {
@@ -89,7 +89,7 @@ public class PubnubPamAsync implements PubnubPamAsyncInterface {
             
         };
         
-        PubnubPamAsyncGrantApiStateCOptions apiGrantOptions = new PubnubPamAsyncGrantApiStateCOptions() {
+        final PubnubPamAsyncGrantApiStateCOptions apiGrantOptions = new PubnubPamAsyncGrantApiStateCOptions() {
 
             @Override
             public PubnubPamAsyncGrantApiStateCOptions read(boolean read) {
@@ -122,7 +122,7 @@ public class PubnubPamAsync implements PubnubPamAsyncInterface {
             
         };
 
-        PubnubPamAsyncGrantApiStateChannel apiGrantChannel = new PubnubPamAsyncGrantApiStateChannel() {
+        final PubnubPamAsyncGrantApiStateChannel apiGrantChannel = new PubnubPamAsyncGrantApiStateChannel() {
 
             @Override
             public PubnubPamAsyncGrantApiStateCOptions channel(String channel) {
@@ -154,16 +154,16 @@ public class PubnubPamAsync implements PubnubPamAsyncInterface {
 
     @Override
     public PubnubPamAsyncRevokeInterface revoke() {
-        
-        PubnubPamAsyncRevokeEnd apiRevokeEnd = new PubnubPamAsyncRevokeEnd() {
+
+        final PubnubPamAsyncRevokeEnd apiRevokeEnd = new PubnubPamAsyncRevokeEnd() {
 
             @Override
             public void invoke() {
                 _invokeRevoke();
             }
         };
-        
-        PubnubPamAsyncRevokeApiStateOptions apiRevokeOptions = new PubnubPamAsyncRevokeApiStateOptions(){
+
+        final PubnubPamAsyncRevokeApiStateOptions apiRevokeOptions = new PubnubPamAsyncRevokeApiStateOptions(){
 
             @Override
             public void invoke() {
@@ -177,8 +177,8 @@ public class PubnubPamAsync implements PubnubPamAsyncInterface {
             }
             
         };
-        
-        PubnubPamAsyncRevokeApiStateChannel apiRevokeChannel = new PubnubPamAsyncRevokeApiStateChannel() {
+
+        final PubnubPamAsyncRevokeApiStateChannel apiRevokeChannel = new PubnubPamAsyncRevokeApiStateChannel() {
 
             @Override
             public void invoke() {
@@ -198,8 +198,8 @@ public class PubnubPamAsync implements PubnubPamAsyncInterface {
             }
             
         };
-        
-        PubnubPamAsyncRevokeInterface apiRevoke = new PubnubPamAsyncRevokeInterface() {
+
+        final PubnubPamAsyncRevokeInterface apiRevoke = new PubnubPamAsyncRevokeInterface() {
 
             @Override
             public PubnubPamAsyncRevokeApiStateChannel callback(PamModifyCallback callback) {
@@ -213,8 +213,8 @@ public class PubnubPamAsync implements PubnubPamAsyncInterface {
 
     @Override
     public PubnubPamAsyncAuditInterface audit() {
-        
-        PubnubPamAsyncAuditEnd apiAuditEnd = new PubnubPamAsyncAuditEnd(){
+
+        final PubnubPamAsyncAuditEnd apiAuditEnd = new PubnubPamAsyncAuditEnd(){
 
             @Override
             public void invoke() {
@@ -223,7 +223,7 @@ public class PubnubPamAsync implements PubnubPamAsyncInterface {
             
         };
         
-        PubnubPamAsyncAuditApiStateCGOptions apiAuditCGOptions = new PubnubPamAsyncAuditApiStateCGOptions() {
+        final PubnubPamAsyncAuditApiStateCGOptions apiAuditCGOptions = new PubnubPamAsyncAuditApiStateCGOptions() {
 
             @Override
             public void invoke() {
@@ -237,8 +237,8 @@ public class PubnubPamAsync implements PubnubPamAsyncInterface {
             }
             
         };
-        
-        PubnubPamAsyncAuditApiStateCOptions apiAuditCOptions = new PubnubPamAsyncAuditApiStateCOptions() {
+
+        final PubnubPamAsyncAuditApiStateCOptions apiAuditCOptions = new PubnubPamAsyncAuditApiStateCOptions() {
 
             @Override
             public void invoke() {
@@ -252,8 +252,8 @@ public class PubnubPamAsync implements PubnubPamAsyncInterface {
             }
             
         };
-        
-        PubnubPamAsyncAuditApiStateChannel apiAuditChannel = new PubnubPamAsyncAuditApiStateChannel() {
+
+        final PubnubPamAsyncAuditApiStateChannel apiAuditChannel = new PubnubPamAsyncAuditApiStateChannel() {
 
             @Override
             public void invoke() {

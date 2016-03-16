@@ -12,15 +12,16 @@ public class StreamResult extends Result {
 	}
 	
 	public StreamResult(SubscribeResult result) {
-		this.clientRequest = result.clientRequest;
-		this.code = result.code;
-		this.config = result.config;
-		this.connectionId = result.connectionId;
-		this.hreq = result.hreq;
-		this.operation = result.operation;
-		this.pubnub = result.pubnub;
-		this.serverResponse = result.serverResponse;
-		this.type = result.type;
+		this.setClientRequest(result.getClientRequest());
+		this.setCode(result.getCode());
+		this.setConfig(result.getConfig());
+		this.setConnectionId(result.getConnectionId());
+		this.setHreq(result.getHreq());
+		this.setOperation(result.getOperation());
+		this.setPubnub(result.getPubnub());
+		this.setServerResponse(result.getServerResponse());
+		this.setType(result.getType());
+
 		data = new StreamData();
 		data.message = result.data.message;
 		data.timetoken = result.data.timetoken;

@@ -1,7 +1,9 @@
 package com.pubnub.domain;
 
 import com.pubnub.interfaces.StatusInterface;
+import lombok.Data;
 
+@Data
 public class  Status extends Result implements StatusInterface {
 	boolean wasAutoRetried;
 	boolean isError;
@@ -31,17 +33,17 @@ public class  Status extends Result implements StatusInterface {
     }
     Status() {
         super();
-        this.type = ResultType.STATUS;
+        this.setType(ResultType.STATUS);
     }
     
     Status(Result result) {
-        this.type = ResultType.STATUS;
-        this.code = result.code;
-        this.operation = result.operation;
-        this.config = result.config;
-        this.connectionId = result.connectionId;
-        this.clientRequest = result.clientRequest;
-        this.serverResponse = result.serverResponse;
+        this.setType(ResultType.STATUS);
+        this.setCode(result.getCode());
+        this.setOperation(result.getOperation());
+        this.setConfig(result.getConfig());
+        this.setConnectionId(result.getConnectionId());
+        this.setClientRequest(result.getClientRequest());
+        this.setServerResponse(result.getServerResponse());
     }
 
     @Override

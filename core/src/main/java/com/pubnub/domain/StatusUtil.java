@@ -1,5 +1,7 @@
 package com.pubnub.domain;
 
+import com.pubnub.interfaces.StatusInterface;
+
 public class StatusUtil {
 	public String getString(StatusInterface statusInterface) {
 		String s = "";

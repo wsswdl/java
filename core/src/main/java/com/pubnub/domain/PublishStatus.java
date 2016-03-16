@@ -9,7 +9,7 @@ public class PublishStatus extends AcknowledgmentStatus {
 
 	void fillPublishStatusDetails() {
         category = category.ACK;
-        operation = operation.PUBLISH; 
+        this.setOperation(OperationType.PUBLISH);
 	}
 	
 	public PublishStatus(Result result) {
@@ -48,6 +48,6 @@ public class PublishStatus extends AcknowledgmentStatus {
 
 	@Override
 	public void retry() {
-		pubnub.sendNonSubscribeRequest(hreq);
+		this.getPubnub().sendNonSubscribeRequest(this.getHreq());
 	}
 }

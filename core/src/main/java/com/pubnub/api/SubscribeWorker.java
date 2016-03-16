@@ -1,5 +1,7 @@
 package com.pubnub.api;
 
+import com.pubnub.domain.Result;
+
 import java.net.SocketTimeoutException;
 import java.util.Hashtable;
 import java.util.Vector;

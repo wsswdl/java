@@ -1,13 +1,10 @@
 package com.pubnub.api;
 
-import static com.pubnub.api.PubnubError.PNERR_DECRYPTION_ERROR;
-import static com.pubnub.api.PubnubError.PNERR_ENCRYPTION_ERROR;
-import static com.pubnub.api.PubnubError.PNERR_FORBIDDEN;
-import static com.pubnub.api.PubnubError.PNERR_INVALID_JSON;
-import static com.pubnub.api.PubnubError.PNERR_UNAUTHORIZED;
-
+import com.pubnub.api.PubnubError;
 import com.pubnub.domain.ErrorStatus;
 import com.pubnub.domain.Result;
+import com.pubnub.domain.StatusCategory;
+import com.pubnub.domain.SubscribeResult;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -21,25 +18,25 @@ import org.json.JSONObject;
  */
 
 
-abstract class Callback {
+public abstract class Callback {
 	
     
-    ErrorStatus fillErrorStatusDetails(ErrorStatus status, PubnubError error, Result result) {
+    public ErrorStatus fillErrorStatusDetails(ErrorStatus status, PubnubError error, Result result) {
 
-        status.wasAutoRetried = false;
-        status.errorData.information = error.getErrorMessage();
+        status.setWasAutoRetried(false);
+        status.getErrorData().setInformation(error.getErrorMessage());
         
         switch(error.errorCode) {
-        case PNERR_FORBIDDEN:
-        case PNERR_UNAUTHORIZED:
-            status.category = StatusCategory.ACCESS_DENIED;
+        case PubnubError.PNERR_FORBIDDEN:
+        case PubnubError.PNERR_UNAUTHORIZED:
+            status.setCategory(StatusCategory.ACCESS_DENIED);
             break;
-        case PNERR_ENCRYPTION_ERROR:
-        case PNERR_DECRYPTION_ERROR:
-            status.category = StatusCategory.ENCRYPTION_ERROR;
+        case PubnubError.PNERR_ENCRYPTION_ERROR:
+        case PubnubError.PNERR_DECRYPTION_ERROR:
+            status.setCategory(StatusCategory.ENCRYPTION_ERROR);
             break;
-        case PNERR_INVALID_JSON:
-            status.category = StatusCategory.NON_JSON_RESPONSE;
+        case PubnubError.PNERR_INVALID_JSON:
+            status.setCategory(StatusCategory.NON_JSON_RESPONSE);
             break;
         default:
             break;
@@ -48,24 +45,24 @@ abstract class Callback {
         return status;
     }
     
-    ErrorStatus fillErrorStatusDetails(PubnubError error, Result result) {
+    public ErrorStatus fillErrorStatusDetails(PubnubError error, Result result) {
         
         
         ErrorStatus status = new ErrorStatus(result);
-        status.wasAutoRetried = false;
-        status.errorData.information = error.getErrorMessage();
+        status.setWasAutoRetried(false);
+        status.getErrorData().setInformation(error.getErrorMessage());
         
         switch(error.errorCode) {
-        case PNERR_FORBIDDEN:
-        case PNERR_UNAUTHORIZED:
-            status.category = StatusCategory.ACCESS_DENIED;
+        case PubnubError.PNERR_FORBIDDEN:
+        case PubnubError.PNERR_UNAUTHORIZED:
+            status.setCategory(StatusCategory.ACCESS_DENIED);
             break;
-        case PNERR_ENCRYPTION_ERROR:
-        case PNERR_DECRYPTION_ERROR:
-            status.category = StatusCategory.ENCRYPTION_ERROR;
+        case PubnubError.PNERR_ENCRYPTION_ERROR:
+        case PubnubError.PNERR_DECRYPTION_ERROR:
+            status.setCategory(StatusCategory.ENCRYPTION_ERROR);
             break;
-        case PNERR_INVALID_JSON:
-            status.category = StatusCategory.NON_JSON_RESPONSE;
+        case PubnubError.PNERR_INVALID_JSON:
+            status.setCategory(StatusCategory.NON_JSON_RESPONSE);
             break;
         default:
             break;
@@ -74,8 +71,8 @@ abstract class Callback {
         return status;
     }
     
-	abstract void successCallback(String channel, Object response, Result result);
-	abstract void errorCallback(String channel, PubnubError error, Result result);
+	public abstract void successCallback(String channel, Object response, Result result);
+	public abstract void errorCallback(String channel, PubnubError error, Result result);
 
 	
 	/*
@@ -226,8 +223,8 @@ abstract class Callback {
     void successWrapperCallback(String channel, Object message, String timetoken, SubscribeResult result) {
         System.out.println("wrapper callback");
         System.out.println(message);
-    	result.data.timetoken = timetoken;
-        result.data.message = message;
+    	result.getData().timetoken = timetoken;
+        result.getData().message = message;
         successCallback(channel, message, result);
     }
 

@@ -1,5 +1,9 @@
 package com.pubnub.callbacks;
 
+import com.pubnub.api.Callback;
+import com.pubnub.api.PubnubError;
+import com.pubnub.domain.PublishStatus;
+import com.pubnub.domain.Result;
 import org.json.JSONArray;
 import org.json.JSONException;
 
@@ -7,13 +11,13 @@ public abstract class PublishCallback extends Callback {
     public abstract void status(PublishStatus status);
     
     @Override
-    void successCallback(String channel, Object message, Result result) {
+    public void successCallback(String channel, Object message, Result result) {
 
         PublishStatus status = new PublishStatus(result);
-        status.isError = false;
+        status.setError(false);
         try {
-            status.data.timetoken = ((JSONArray) message).getString(2);
-            status.data.information = ((JSONArray) message).getString(1);
+            status.getData().timetoken = ((JSONArray) message).getString(2);
+            status.getData().information = ((JSONArray) message).getString(1);
             status(status);
         } catch (JSONException e) {
             e.printStackTrace();
@@ -24,9 +28,9 @@ public abstract class PublishCallback extends Callback {
     }
     
     @Override
-    void errorCallback(String channel, PubnubError error, Result result) {
+    public void errorCallback(String channel, PubnubError error, Result result) {
         PublishStatus status = new PublishStatus(result);
-        status.errorData.channels = new String[]{channel};
+        status.getErrorData().setChannels(new String[]{channel});
         status(status);
     }
 }

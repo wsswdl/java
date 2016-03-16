@@ -1,7 +1,7 @@
 package com.pubnub.domain;
 
 public class AcknowledgmentStatus extends ErrorStatus {
-    AcknowledgmentStatus(Result result) {
+    public AcknowledgmentStatus(Result result) {
         super(result);
     }
 

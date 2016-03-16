@@ -222,12 +222,12 @@ abstract public class PubnubCore implements PubnubInterface {
 
     protected Callback voidCallback = new Callback() {
         @Override
-        void successCallback(String channel, Object message, Result result) {
+        public void successCallback(String channel, Object message, Result result) {
             
         }
         
         @Override
-        void errorCallback(String channel, PubnubError error, Result result) {
+        public void errorCallback(String channel, PubnubError error, Result result) {
             
         }
     };
@@ -269,7 +269,7 @@ abstract public class PubnubCore implements PubnubInterface {
         return this.UUID;
     }
 
-    protected Object _publish(Hashtable args, boolean sync) {
+    public Object _publish(Hashtable args, boolean sync) {
 
         final String channel = (String) args.get("channel");
         final Object message = args.get("message");
@@ -405,7 +405,7 @@ abstract public class PubnubCore implements PubnubInterface {
         return _request(hreq, simpleConnManager, false);
     }
 
-    void sendNonSubscribeRequest(HttpRequest hreq) {
+    public void sendNonSubscribeRequest(HttpRequest hreq) {
         _request(hreq, this.nonSubscribeManager);
     }
 
@@ -469,7 +469,7 @@ abstract public class PubnubCore implements PubnubInterface {
     }
     
 
-    protected Object _history(final String channel, long start, long end, int count, boolean reverse,
+    public Object _history(final String channel, long start, long end, int count, boolean reverse,
             boolean includeTimetoken, Callback callback, boolean sync) {
         final Callback cb = getWrappedCallback(callback);
         Hashtable parameters = PubnubUtil.hashtableClone(params);
@@ -586,12 +586,12 @@ abstract public class PubnubCore implements PubnubInterface {
 
 
     protected void setResultData(Result result, OperationType operationType, HttpRequest hreq) {
-        result.hreq = hreq;
-        result.pubnub = this;
+        result.setHreq(hreq);
+        result.setPubnub(this);
         result.getConfig().setOrigin(this.ORIGIN_STR);
-        result.config.authKey = this.AUTH_STR;
-        result.config.uuid = this.UUID;
-        result.operation = operationType;
+        result.getConfig().setAuthKey(this.AUTH_STR);
+        result.getConfig().setUuid(this.UUID);
+        result.setOperation(operationType);
     }
 
     protected boolean validateInput(String name, Object input, Callback callback, Result result) {
@@ -1237,7 +1237,7 @@ abstract public class PubnubCore implements PubnubInterface {
 
     }
 
-    protected Object _pamGrantChannelGroup(final String group, String auth_key, boolean read, boolean management,
+    public Object _pamGrantChannelGroup(final String group, String auth_key, boolean read, boolean management,
             int ttl, Callback callback, boolean sync) {
         String signature;
         Result result = new Result();

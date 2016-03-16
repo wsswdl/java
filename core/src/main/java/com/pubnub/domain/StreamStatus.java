@@ -1,22 +1,28 @@
 package com.pubnub.domain;
 
-public class StreamStatus extends StreamResult implements StatusInterface  {
+import com.pubnub.interfaces.StatusInterface;
+import lombok.Data;
 
-	boolean wasAutoRetried;
-	boolean isError;
-	StatusCategory category;
+@Data
+public class StreamStatus extends StreamResult implements StatusInterface {
+
+	private boolean wasAutoRetried;
+	private boolean error;
+	private StatusCategory category;
     
 	public StreamStatus(StreamResult result) {
 		this();
-		this.clientRequest = result.clientRequest;
-		this.code = result.code;
-		this.config = result.config;
-		this.connectionId = result.connectionId;
-		this.hreq = result.hreq;
-		this.operation = result.operation;
-		this.pubnub = result.pubnub;
-		this.serverResponse = result.serverResponse;
-		this.type = ResultType.STATUS;
+
+		this.setClientRequest(result.getClientRequest());
+		this.setCode(result.getCode());
+		this.setConfig(result.getConfig());
+		this.setConnectionId(result.getConnectionId());
+		this.setHreq(result.getHreq());
+		this.setOperation(result.getOperation());
+		this.setPubnub(result.getPubnub());
+		this.setServerResponse(result.getServerResponse());
+		this.setType(ResultType.STATUS);
+
 	    data = new StreamData();
 	    data.message = result.data.message;
 	    data.timetoken = result.data.timetoken;
@@ -32,11 +38,6 @@ public class StreamStatus extends StreamResult implements StatusInterface  {
 	}
 
 	@Override
-	public boolean isError() {
-		return isError;
-	}
-
-	@Override
 	public boolean wasAutoRetried() {
 		return wasAutoRetried;
 	}
@@ -44,14 +45,6 @@ public class StreamStatus extends StreamResult implements StatusInterface  {
 	@Override
 	public void retry() {
 
-	}
-	
-	public String toString() {
-		String s = super.toString();
-		s = s + "Was Auto Retried ? : " + wasAutoRetried + "\n";
-		s = s + "Is Error ? : " + isError + "\n";
-		s = s + "Category : " + category + "\n";
-		return s;	
 	}
 
 }

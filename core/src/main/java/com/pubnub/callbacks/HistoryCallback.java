@@ -1,7 +1,9 @@
 package com.pubnub.callbacks;
 
+import com.pubnub.api.Callback;
 import com.pubnub.api.PubnubError;
 import com.pubnub.domain.ErrorStatus;
+import com.pubnub.domain.HistoryResult;
 import com.pubnub.domain.OperationType;
 import com.pubnub.domain.Result;
 import org.json.JSONArray;
@@ -13,12 +15,12 @@ public abstract class HistoryCallback extends Callback {
     public abstract void result(HistoryResult result);
     
     @Override
-    void successCallback(String channel, Object message, Result result) {
+    public void successCallback(String channel, Object message, Result result) {
         HistoryResult hresult = (HistoryResult)result;
         try {
-            hresult.data.messages = ((JSONArray) message).getJSONArray(0);
-            hresult.data.start = (String)((JSONArray) message).getString(1);
-            hresult.data.end = (String)((JSONArray) message).getString(2);
+            hresult.getData().setMessages(((JSONArray) message).getJSONArray(0));
+            hresult.getData().setStart((String)((JSONArray) message).getString(1));
+            hresult.getData().setEnd((String)((JSONArray) message).getString(2));
 
             result(hresult);
         } catch (JSONException e) {
@@ -32,11 +34,11 @@ public abstract class HistoryCallback extends Callback {
     }
     
     @Override
-    void errorCallback(String channel, PubnubError error, Result result) {
+    public void errorCallback(String channel, PubnubError error, Result result) {
         
         ErrorStatus status = fillErrorStatusDetails(error, result);
-        status.operation = OperationType.HISTORY;
-        status.errorData.channels = new String[]{channel};
+        status.setOperation(OperationType.HISTORY);
+        status.getErrorData().setChannels(new String[]{channel});
         status(status);
 
     }

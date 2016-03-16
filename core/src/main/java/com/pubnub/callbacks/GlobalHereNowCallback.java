@@ -1,5 +1,8 @@
 package com.pubnub.callbacks;
 
+import com.pubnub.api.Callback;
+import com.pubnub.api.PubnubError;
+import com.pubnub.domain.*;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -9,11 +12,11 @@ public abstract class GlobalHereNowCallback extends Callback {
     
     
     @Override
-    void successCallback(String channel, Object message, Result result) {
+    public void successCallback(String channel, Object message, Result result) {
         GlobalHereNowResult hresult = (GlobalHereNowResult)result;
         System.out.println(message);
         try {
-            hresult.data.occupancy = ((JSONObject) message).getInt("occupancy");
+            hresult.getData().setOccupancy(((JSONObject) message).getInt("occupancy"));
         } catch (JSONException e) {
             // ERROR
             //e.printStackTrace();
@@ -22,7 +25,7 @@ public abstract class GlobalHereNowCallback extends Callback {
         }
         try {
 
-            hresult.data.uuids = GlobalHereNowData.getUuidDataArray(((JSONObject) message).getJSONArray("uuids"));
+            hresult.getData().setUuids(GlobalHereNowData.getUuidDataArray(((JSONObject) message).getJSONArray("uuids")));
         } catch (JSONException e) {
             // ERROR
             //e.printStackTrace();
@@ -33,10 +36,10 @@ public abstract class GlobalHereNowCallback extends Callback {
     }
     
     @Override
-    void errorCallback(String channel, PubnubError error, Result result) {
+    public void errorCallback(String channel, PubnubError error, Result result) {
         ErrorStatus status = fillErrorStatusDetails(error, result);
-        status.operation = OperationType.HERE_NOW_GLOBAL;
-        status.errorData.channels = new String[]{channel};
+        status.setOperation(OperationType.HERE_NOW_GLOBAL);
+        status.getErrorData().setChannels(new String[]{channel});
         status(status);  
     }
 }

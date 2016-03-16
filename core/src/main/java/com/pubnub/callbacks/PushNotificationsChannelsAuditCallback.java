@@ -1,5 +1,6 @@
 package com.pubnub.callbacks;
 
+import com.pubnub.api.Callback;
 import com.pubnub.api.PubnubError;
 import com.pubnub.domain.ErrorStatus;
 import com.pubnub.domain.PushNotificationsChannelsAuditResult;
@@ -10,12 +11,12 @@ public abstract class PushNotificationsChannelsAuditCallback extends Callback {
     public abstract void result(PushNotificationsChannelsAuditResult result);
     
     @Override
-    void successCallback(String channel, Object message, Result result) {
+    public void successCallback(String channel, Object message, Result result) {
         
     }
     
     @Override
-    void errorCallback(String channel, PubnubError error, Result result) {
+    public void errorCallback(String channel, PubnubError error, Result result) {
         ErrorStatus status = fillErrorStatusDetails(error, result);
         //status.operation = OperationType.CHANNEL_GROUPS;
         status.errorData.channels = new String[]{channel};

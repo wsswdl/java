@@ -1,10 +1,13 @@
 package com.pubnub.domain;
 
-public class HistoryResult extends Result {
-    HistoryData data;
+import lombok.Data;
 
-    HistoryResult(){
-        this.type = ResultType.RESULT;
+@Data
+public class HistoryResult extends Result {
+    private HistoryData data;
+
+    public HistoryResult(){
+        this.setType(ResultType.RESULT);
         this.data = new HistoryData();
     }
     

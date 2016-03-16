@@ -1,5 +1,7 @@
 package com.pubnub.api;
 
+import com.pubnub.domain.Result;
+import com.pubnub.domain.SubscribeResult;
 import org.json.JSONArray;
 import org.json.JSONObject;
 

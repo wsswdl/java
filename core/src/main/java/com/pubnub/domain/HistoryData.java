@@ -1,35 +1,13 @@
 package com.pubnub.domain;
 
+import lombok.Data;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+@Data
 public class HistoryData {
-    public JSONArray getMessages() {
-        return messages;
-    }
+    private JSONArray messages;
+    private String start;
+    private String end;
 
-    public String getStart() {
-        return start;
-    }
-
-    public String getEnd() {
-        return end;
-    }
-
-    JSONArray messages;
-    String start;
-    String end;
-    
-    public String toString() {
-        String s = "";
-        s = s + "Start: " + start + "\n";
-        s = s + "End: " + start + "\n";
-        try {
-            s = s + "Messages: " + messages.toString(2) + "\n";
-        } catch (JSONException e) {
-           // ERROR
-        }
-        return s;
-    }
-    
 }

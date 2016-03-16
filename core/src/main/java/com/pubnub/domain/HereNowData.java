@@ -1,36 +1,17 @@
 package com.pubnub.domain;
 
+import lombok.Data;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@Data
 public class HereNowData {
-	int occupancy;
-	public int getOccupancy() {
-        return occupancy;
-    }
+	private int occupancy;
+    private int totalOccupancy;
+    private HereNowUuidData[] uuids;
 
-    public int getTotalOccupancy() {
-        return totalOccupancy;
-    }
 
-    public HereNowUuidData[] getUuids() {
-        return uuids;
-    }
-
-    int totalOccupancy;
-	HereNowUuidData[] uuids;
-	
-	
-	public String toString() {
-
-		String s = "";
-		s = s + "Occupancy: " + occupancy + "\n";
-		s = s + "Total Occupancy: " + occupancy + "\n";
-		if (uuids != null) s = s + "UUIDS: " + HereNowUuidData.arrayToString(uuids) + "\n";
-
-		return s;
-	}
 
     public static HereNowUuidData[] getUuidDataArray(JSONArray jsonArray) {
         System.out.println(jsonArray.toString());

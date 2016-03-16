@@ -1,5 +1,7 @@
 package com.pubnub.domain;
 
+import com.pubnub.interfaces.StatusInterface;
+
 public class SubscribeStatus extends SubscribeResult implements StatusInterface {
 
 	Status status;
@@ -10,15 +12,16 @@ public class SubscribeStatus extends SubscribeResult implements StatusInterface 
 	
 	public SubscribeStatus(SubscribeResult result) {
 		this();
-		this.clientRequest = result.clientRequest;
-		this.code = result.code;
-		this.config = result.config;
-		this.connectionId = result.connectionId;
-		this.hreq = result.hreq;
-		this.operation = result.operation;
-		this.pubnub = result.pubnub;
-		this.serverResponse = result.serverResponse;
-		this.type = result.type;
+
+		this.setClientRequest(result.getClientRequest());
+		this.setCode(result.getCode());
+		this.setConfig(result.getConfig());
+		this.setConnectionId(result.getConnectionId());
+		this.setHreq(result.getHreq());
+		this.setOperation(result.getOperation());
+		this.setPubnub(result.getPubnub());
+		this.setServerResponse(result.getServerResponse());
+		this.setType(result.getType());
 	}
 	
 	@Override
