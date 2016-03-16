@@ -15,7 +15,7 @@ public abstract class ChannelGroupHereNowCallback extends Callback {
         ChannelGroupHereNowResult hresult = (ChannelGroupHereNowResult)result;
         System.out.println(message);
         try {
-            hresult.data.occupancy = ((JSONObject) message).getInt("occupancy");
+            hresult.getData().setOccupancy(((JSONObject) message).getInt("occupancy"));
         } catch (JSONException e) {
             // ERROR
             //e.printStackTrace();
@@ -24,7 +24,7 @@ public abstract class ChannelGroupHereNowCallback extends Callback {
         }
         try {
 
-            hresult.data.uuids = ChannelGroupHereNowData.getUuidDataArray(((JSONObject) message).getJSONArray("uuids"));
+            hresult.getData().setUuids(ChannelGroupHereNowData.getUuidDataArray(((JSONObject) message).getJSONArray("uuids")));
         } catch (JSONException e) {
             // ERROR
             //e.printStackTrace();
@@ -37,8 +37,8 @@ public abstract class ChannelGroupHereNowCallback extends Callback {
     @Override
     public void errorCallback(String channel, PubnubError error, Result result) {
         ErrorStatus status = fillErrorStatusDetails(error, result);
-        status.operation = OperationType.HERE_NOW_FOR_CHANNEL_GROUP;
-        status.errorData.channels = new String[]{channel};
+        status.setOperation(OperationType.HERE_NOW_FOR_CHANNEL_GROUP);
+        status.getErrorData().setChannels(new String[]{channel});
         status(status);  
     }
 }

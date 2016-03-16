@@ -34,10 +34,10 @@ public class PubnubPushNAsync implements PubnubPushNAsyncInterface {
     
     @Override
     public PubnubPushNAsyncApiStateDisableC disableOn() {
-        
-        PubnubPushNAsyncApiStateDisableRegId apiRegId = new PubnubPushNAsyncApiStateDisableRegId() {
 
-            PubnubPushNAsyncApiStateDisableCb apiCb = new PubnubPushNAsyncApiStateDisableCb() {
+        final PubnubPushNAsyncApiStateDisableRegId apiRegId = new PubnubPushNAsyncApiStateDisableRegId() {
+
+            final PubnubPushNAsyncApiStateDisableCb apiCb = new PubnubPushNAsyncApiStateDisableCb() {
 
                 PubnubPushNAsyncApiStateDisableEnd apiEnd = new PubnubPushNAsyncApiStateDisableEnd(){
 
@@ -71,7 +71,7 @@ public class PubnubPushNAsync implements PubnubPushNAsyncInterface {
             
         };
         
-        PubnubPushNAsyncApiStateDisableC apiDisable = new PubnubPushNAsyncApiStateDisableC() {
+        final PubnubPushNAsyncApiStateDisableC apiDisable = new PubnubPushNAsyncApiStateDisableC() {
 
             @Override
             public PubnubPushNAsyncApiStateDisableRegId channel(String channel) {

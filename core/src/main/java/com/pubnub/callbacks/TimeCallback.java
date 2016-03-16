@@ -17,7 +17,7 @@ public abstract class TimeCallback extends Callback {
     public void successCallback(String channel, Object message, Result result) {
       TimeResult tresult = new TimeResult(result);
       try {
-        tresult.data.timetoken = ((JSONArray) message).getString(0);
+        tresult.getData().setTimetoken(((JSONArray) message).getString(0));
         } catch (JSONException e) {
             // Error Handler
         }
@@ -26,7 +26,7 @@ public abstract class TimeCallback extends Callback {
     @Override
     public void errorCallback(String channel, PubnubError error, Result result) {
         ErrorStatus status = fillErrorStatusDetails(error, result);
-        status.operation = OperationType.TIME;
+        status.setOperation(OperationType.TIME);
         status(status);       
     }
 }

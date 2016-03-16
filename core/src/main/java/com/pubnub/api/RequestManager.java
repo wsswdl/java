@@ -1,5 +1,7 @@
 package com.pubnub.api;
 
+import com.pubnub.domain.Result;
+
 import java.util.Hashtable;
 import java.util.Vector;
 
@@ -96,13 +98,13 @@ class NonSubscribeWorker extends Worker {
         try {
             log.debug(hreq.getUrl());
             String url = hreq.getUrl();
-            result.clientRequest = url;
+            result.setClientRequest(url);
             hresp = httpclient.fetch(hreq.getUrl(), hreq.getHeaders());
         } catch (PubnubException pe) {
             log.debug("Pubnub Exception in Fetch : " + pe.getPubnubError());
             if (result != null) {
-                result.code = pe.getStatusCode();
-                result.serverResponse = pe.getErrorResponse();
+                result.setCode(pe.getStatusCode());
+                result.setServerResponse(pe.getErrorResponse());
             }
             if (!_die)
                 hreq.getResponseHandler().handleError(hreq, pe.getPubnubError(), hreq.getResult());
@@ -116,8 +118,8 @@ class NonSubscribeWorker extends Worker {
         } finally {
 
             if (result != null && hresp != null) {
-                result.code = hresp.getStatusCode();
-                result.serverResponse = hresp.getResponse();
+                result.setCode(hresp.getStatusCode());
+                result.setServerResponse(hresp.getResponse());
             }
         }
 

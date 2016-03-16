@@ -1,25 +1,15 @@
 package com.pubnub.domain;
 
+import lombok.Data;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+@Data
 public class ChannelGroupHereNowData {
-    int occupancy;
-    public int getOccupancy() {
-        return occupancy;
-    }
-
-    public int getTotalOccupancy() {
-        return totalOccupancy;
-    }
-
-    public ChannelGroupHereNowUuidData[] getUuids() {
-        return uuids;
-    }
-
-    int totalOccupancy;
-    ChannelGroupHereNowUuidData[] uuids;
+    private int occupancy;
+    private int totalOccupancy;
+    private ChannelGroupHereNowUuidData[] uuids;
     
     
     public String toString() {

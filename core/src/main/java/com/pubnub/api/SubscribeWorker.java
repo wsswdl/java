@@ -49,10 +49,10 @@ class SubscribeWorker extends AbstractSubscribeWorker {
                 Worker.log.debug(hreq.getUrl());
 
                 result = hreq.getResult();
-                result.clientRequest = hreq.getUrl();
+                result.setClientRequest(hreq.getUrl());
                 hresp = httpclient.fetch(hreq.getUrl(), hreq.getHeaders());
-                result.serverResponse = hresp.getResponse();
-                result.code = hresp.getStatusCode();
+                result.setServerResponse(hresp.getResponse());
+                result.setCode(hresp.getStatusCode());
                 if (hresp != null && HttpUtil.checkResponseSuccess(hresp.getStatusCode())) {
                     currentRetryAttempt = 1;
                     break;
@@ -72,8 +72,8 @@ class SubscribeWorker extends AbstractSubscribeWorker {
 
             } catch (PubnubException e) {
                 excp = e;
-                result.serverResponse = e.getErrorResponse();
-                result.code = e.getStatusCode();
+                result.setServerResponse(e.getErrorResponse());
+                result.setCode(e.getStatusCode());
                 switch (e.getPubnubError().errorCode) {
                 case PubnubError.PNERR_FORBIDDEN:
                 case PubnubError.PNERR_UNAUTHORIZED:
