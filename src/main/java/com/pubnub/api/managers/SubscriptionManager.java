@@ -33,7 +33,6 @@ public class SubscriptionManager {
     private Map<String, SubscriptionItem> subscribedChannelGroups;
     private Map<String, Object> stateStorage;
     private List<SubscribeCallback> listeners;
-    private Pubnub pubnub;
     private Call<SubscribeEnvelope> subscribeCall;
     private Call<Envelope> heartbeatCall;
     /**
@@ -48,12 +47,18 @@ public class SubscriptionManager {
 
     Timer timer;
 
-    public SubscriptionManager(Pubnub pubnub) {
+    private Pubnub pubnub;
+    private Crypto crypto;
+
+    public SubscriptionManager(Pubnub pubnub, Crypto providedCrypto) {
         this.subscribedChannelGroups = new HashMap<>();
         this.subscribedChannels = new HashMap<>();
-        this.pubnub = pubnub;
         this.listeners = new ArrayList<>();
         this.stateStorage = new HashMap<>();
+
+        this.pubnub = pubnub;
+        this.crypto = providedCrypto;
+
     }
 
     public synchronized void stop() {
@@ -312,7 +317,6 @@ public class SubscriptionManager {
             return input;
         }
 
-        Crypto crypto = new Crypto(pubnub.getConfiguration().getCipherKey());
         String outputText = crypto.decrypt(input.toString());
 
         ObjectMapper mapper = new ObjectMapper();

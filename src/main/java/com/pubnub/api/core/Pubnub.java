@@ -36,14 +36,23 @@ public class Pubnub {
     private BasePathManager basePathManager;
     @Getter(AccessLevel.NONE)
     private PublishSequenceManager publishSequenceManager;
+    @Getter(AccessLevel.NONE)
+    private Crypto crypto;
 
     private String sdkVersion;
 
     public Pubnub(final PnConfiguration initialConfig) {
         this.configuration = initialConfig;
-        this.subscriptionManager = new SubscriptionManager(this);
+
+
         this.basePathManager = new BasePathManager(initialConfig);
         this.publishSequenceManager = new PublishSequenceManager(65535);
+
+        if (configuration.getCipherKey() != null) {
+            crypto = new Crypto(configuration.getCipherKey());
+        }
+
+        this.subscriptionManager = new SubscriptionManager(this, crypto);
 
         sdkVersion = fetchSDKVersion();
     }
@@ -95,7 +104,7 @@ public class Pubnub {
         return new Time(this);
     }
 
-    public final History history() { return new History(this); }
+    public final History history() { return new History(this, crypto); }
 
 
     public final Audit audit() {
@@ -113,7 +122,7 @@ public class Pubnub {
     }
 
     public final Publish publish() {
-        return new Publish(this, publishSequenceManager);
+        return new Publish(this, publishSequenceManager, crypto);
     }
 
     // public methods

@@ -25,11 +25,14 @@ public class Publish extends Endpoint<List<Object>, PublishData> {
     @Setter private Object meta;
 
     PublishSequenceManager publishSequenceManager;
+    Crypto crypto;
 
-    public Publish(Pubnub pubnub, PublishSequenceManager providedPublishSequenceManager) {
+    public Publish(Pubnub pubnub, PublishSequenceManager providedPublishSequenceManager, Crypto providedCrypto) {
         super(pubnub);
 
         this.publishSequenceManager = providedPublishSequenceManager;
+        this.crypto = providedCrypto;
+
     }
 
     @Override
@@ -79,7 +82,6 @@ public class Publish extends Endpoint<List<Object>, PublishData> {
 
 
         if (pubnub.getConfiguration().getCipherKey() != null) {
-            Crypto crypto = new Crypto(pubnub.getConfiguration().getCipherKey());
             stringifiedMessage = crypto.encrypt(stringifiedMessage).replace("\n", "");
         }
 

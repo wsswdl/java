@@ -31,8 +31,12 @@ public class History extends Endpoint<JsonNode, PNHistoryResult> {
     @Setter private Integer count;
     @Setter private boolean includeTimetoken = false;
 
-    public History(Pubnub pubnub) {
+    private Crypto crypto;
+
+    public History(Pubnub pubnub, Crypto providedCrypto) {
         super(pubnub);
+
+        this.crypto = providedCrypto;
     }
 
     private interface HistoryService {
@@ -118,7 +122,6 @@ public class History extends Endpoint<JsonNode, PNHistoryResult> {
             return message;
         }
 
-        Crypto crypto = new Crypto(pubnub.getConfiguration().getCipherKey());
         String outputText = crypto.decrypt(message.asText());
 
         ObjectMapper mapper = new ObjectMapper();

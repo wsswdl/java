@@ -3,6 +3,7 @@ package com.pubnub.api.endpoints;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
+import com.pubnub.api.core.PnConfiguration;
 import com.pubnub.api.core.Pubnub;
 import com.pubnub.api.core.PubnubException;
 import com.pubnub.api.core.models.consumer_facing.PNHistoryResult;
@@ -84,7 +85,10 @@ public class HistoryEndpointTest extends TestHarness {
 
     @org.junit.Test
     public void testSyncEncryptedSuccess() throws IOException, PubnubException {
-        pubnub.getConfiguration().setCipherKey("testCipher");
+        PnConfiguration config = createBaseConfiguration(8080);
+        config.setCipherKey("testCipher");
+        pubnub = createPubNubInstance(config);
+        partialHistory = pubnub.history();
 
         stubFor(get(urlPathEqualTo("/v2/history/sub-key/mySubscribeKey/channel/niceChannel"))
                 .willReturn(aResponse().withBody("[[\"EGwV+Ti43wh2TprPIq7o0KMuW5j6B3yWy352ucWIOmU=\\n\",\"EGwV+Ti43wh2TprPIq7o0KMuW5j6B3yWy352ucWIOmU=\\n\",\"EGwV+Ti43wh2TprPIq7o0KMuW5j6B3yWy352ucWIOmU=\\n\"],14606134331557853,14606134485013970]")));

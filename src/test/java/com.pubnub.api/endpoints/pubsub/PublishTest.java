@@ -2,6 +2,7 @@ package com.pubnub.api.endpoints.pubsub;
 
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 import com.github.tomakehurst.wiremock.verification.LoggedRequest;
+import com.pubnub.api.core.PnConfiguration;
 import com.pubnub.api.core.Pubnub;
 import com.pubnub.api.core.PubnubException;
 import com.pubnub.api.endpoints.TestHarness;
@@ -165,7 +166,11 @@ public class PublishTest extends TestHarness {
         stubFor(get(urlPathEqualTo("/publish/myPublishKey/mySubscribeKey/0/coolChannel/0/%22HFP7V6bDwBLrwc1t8Rnrog%3D%3D%22"))
                 .willReturn(aResponse().withBody("[1,\"Sent\",\"14598111595318003\"]")));
 
-        pubnub.getConfiguration().setCipherKey("testCipher");
+        PnConfiguration config = createBaseConfiguration(8080);
+        config.setCipherKey("testCipher");
+        pubnub = createPubNubInstance(config);
+        instance = pubnub.publish();
+
         instance.channel("coolChannel").message(Arrays.asList("m1", "m2")).sync();
 
         List<LoggedRequest> requests = findAll(getRequestedFor(urlMatching("/.*")));
@@ -179,7 +184,10 @@ public class PublishTest extends TestHarness {
         stubFor(post(urlPathEqualTo("/publish/myPublishKey/mySubscribeKey/0/coolChannel/0"))
                 .willReturn(aResponse().withBody("[1,\"Sent\",\"14598111595318003\"]")));
 
-        pubnub.getConfiguration().setCipherKey("testCipher");
+        PnConfiguration config = createBaseConfiguration(8080);
+        config.setCipherKey("testCipher");
+        pubnub = createPubNubInstance(config);
+        instance = pubnub.publish();
 
         instance.channel("coolChannel").usePOST(true).message(Arrays.asList("m1", "m2")).sync();
 
