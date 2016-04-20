@@ -4,6 +4,7 @@ import com.pubnub.api.callbacks.SubscribeCallback;
 import com.pubnub.api.core.PnConfiguration;
 import com.pubnub.api.core.Pubnub;
 import com.pubnub.api.core.PubnubException;
+import com.pubnub.api.core.models.consumer_facing.PNAccessManagerGrantResult;
 import com.pubnub.api.core.models.consumer_facing.PNMessageResult;
 import com.pubnub.api.core.models.consumer_facing.PNPresenceEventResult;
 import com.pubnub.api.core.models.consumer_facing.PNStatus;
@@ -17,19 +18,19 @@ import java.util.Map;
 @Slf4j
 public class max_test {
 
-    public static void main(String[] args) throws InterruptedException, PubnubException {
+    public static void main(String[] args) throws InterruptedException {
         PnConfiguration pnConfiguration = new PnConfiguration();
-        pnConfiguration.setSubscribeKey("sub-c-4cec9f8e-01fa-11e6-8180-0619f8945a4f");
-        pnConfiguration.setPublishKey("pub-c-d34a0058-6747-4c9d-b669-e651d7e0efb7");
+        pnConfiguration.setSubscribeKey("sub-c-82ab2196-b64f-11e5-8622-0619f8945a4f");
+        pnConfiguration.setPublishKey("pub-c-8beb3658-0dfd-4032-8f4b-9c6b9ca4d803");
         pnConfiguration.setSecretKey("sec-c-NDJkOWM2ZWItNzBhMS00YzllLWFlZjAtNGJlMjVkZjZlNzMy");
         // pnConfiguration.setCipherKey("testCipher");
 
 
         Pubnub pubnub = new Pubnub(pnConfiguration);
 
-        pubnub.publish()
-                .channel("coolChannel").usePOST(false).shouldStore(true)
-                .message(Arrays.asList("m1", "m2")).sync();
+        //pubnub.publish()
+        //        .channel("coolChannel").usePOST(false).shouldStore(true)
+        //        .message(Arrays.asList("m1", "m2")).sync();
 
         pubnub.addListener(new SubscribeCallback() {
             @Override
@@ -51,7 +52,7 @@ public class max_test {
         Map<String, Object> state = new HashMap<>();
         state.put("max", "moose");
 
-        pubnub.subscribe().channels(Arrays.asList("coolChannel")).withPresence().execute();
+        //pubnub.subscribe().channels(Arrays.asList("coolChannel")).withPresence().execute();
         //pubnub.setPresenceState().channel("max-ch1").state(state).build().async(new PNCallback<PNSetStateResult>() {
         //    @Override
         //    public void onResponse(PNSetStateResult result, PNErrorStatus status) {
@@ -59,18 +60,15 @@ public class max_test {
         //    }
         //});
 
-        /*
         try {
-            Object moose = pubnub.grant().authKey("max")
-                    .channel("ch1-max").channel("ch2-max")
-                    .channelGroup("cg1-max").channelGroup("cg2-max")
+            PNAccessManagerGrantResult moose = pubnub.grant().authKeys(Arrays.asList("key1"))
+                    .channels(Arrays.asList("ch1"))
                     .ttl(0).write(true)
-                    .build().sync();
+                    .sync();
             int max = 11;
         } catch (PubnubException e) {
             e.printStackTrace();
         }
-        */
 
 
         // PNHistoryResult moose = pubnub.history().channel("coolChannelENC2").build().sync();
@@ -78,12 +76,14 @@ public class max_test {
 
         int max = 10;
 
-        /*
-        Object moose = pubnub.audit()
-                .authKey("max").authKey("max2")
-                .channel("ch1")
-                .build().sync();
-        */
+        try {
+            Object moose = pubnub.audit()
+                    .authKeys(Arrays.asList("max"))
+                    .channel("ch1")
+                    .sync();
+        } catch (PubnubException e) {
+            e.printStackTrace();
+        }
 
         //Thread.sleep(5000);
 

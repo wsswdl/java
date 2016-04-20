@@ -1,14 +1,15 @@
-package com.pubnub.api.core.models.consumer_facing;
+package com.pubnub.api.core.models.server_responses;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
+import com.pubnub.api.core.models.consumer_facing.PNAccessManagerKeysData;
 import lombok.Getter;
 
 import java.util.Map;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @Getter
-@Builder
-public class PNAccessManagerGrantData {
+public class GrantResponse {
 
     String level;
     int ttl;
@@ -20,4 +21,5 @@ public class PNAccessManagerGrantData {
 
     @JsonProperty("channel-groups")
     Map<String, PNAccessManagerKeysData> channelGroups;
+
 }
