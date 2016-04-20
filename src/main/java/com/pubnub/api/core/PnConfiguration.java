@@ -1,6 +1,7 @@
 package com.pubnub.api.core;
 
 
+import com.pubnub.api.core.enums.PNHeartbeatNotificationOptions;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -70,6 +71,11 @@ public class PnConfiguration {
     private int nonSubscribeRequestTimeout;
 
     /**
+     * By Default, no
+     */
+    private PNHeartbeatNotificationOptions heartbeatVerbosity;
+
+    /**
      * Initialize the PnConfiguration with default values
      */
     public PnConfiguration() {
@@ -101,7 +107,7 @@ public class PnConfiguration {
      * @return returns itself.
      */
     public PnConfiguration setPresenceTimingConfiguration(final int timeout) {
-        return setPresenceTimingConfiguration(timeout,(timeout / 2) - 1);
+        return setPresenceTimingConfiguration(timeout, (timeout / 2) - 1);
     }
 
 }
