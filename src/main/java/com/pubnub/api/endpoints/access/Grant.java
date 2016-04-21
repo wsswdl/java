@@ -7,6 +7,7 @@ import com.pubnub.api.core.enums.PNOperationType;
 import com.pubnub.api.core.models.Envelope;
 import com.pubnub.api.core.models.consumer_facing.PNAccessManagerGrantData;
 import com.pubnub.api.core.models.consumer_facing.PNAccessManagerGrantResult;
+import com.pubnub.api.core.models.consumer_facing.PNAccessManagerKeysData;
 import com.pubnub.api.core.models.server_responses.GrantResponse;
 import com.pubnub.api.endpoints.Endpoint;
 import lombok.Setter;
@@ -14,10 +15,7 @@ import lombok.experimental.Accessors;
 import retrofit2.Call;
 import retrofit2.Response;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 @Accessors(chain = true, fluent = true)
@@ -96,17 +94,38 @@ public class Grant extends Endpoint<Envelope<GrantResponse>, PNAccessManagerGran
 
 
         GrantResponse grantResponse = input.body().getPayload();
+        Map<String, PNAccessManagerKeysData> channelsAccessRepository = new HashMap<>();
+        Map<String, PNAccessManagerKeysData> channelGroupsAccessRepository = new HashMap<>();
+
+        if (channels.size() == 1 && channelGroups.size() == 0) {
+            PNAccessManagerKeysData pnAccessManagerKeysData = PNAccessManagerKeysData.builder()
+                .auths(grantResponse.getAuthKeys())
+                .build();
+
+            channelsAccessRepository.put(grantResponse.getChannel(), pnAccessManagerKeysData);
+        } else if (channels.size() == 0 && channelGroups.size() == 1) {
+            PNAccessManagerKeysData pnAccessManagerKeysData = PNAccessManagerKeysData.builder()
+                    .auths(grantResponse.getAuthKeys())
+                    .build();
+
+            channelsAccessRepository.put((String) grantResponse.getChannelGroups(), pnAccessManagerKeysData);
+        } else if (channelGroups.size() > 1) {
+            Map<String, PNAccessManagerKeysData> mappedChannelGroups = (Map<String, PNAccessManagerKeysData>) input.body().getPayload().getChannelGroups();
+
+            int moose = 10;
+        }
+
+        System.out.println(input.raw().request().url().toString());
 
         PNAccessManagerGrantData pnAccessManagerGrantData = PNAccessManagerGrantData.builder()
                 .level(grantResponse.getLevel())
                 .subscribeKey(grantResponse.getSubscribeKey())
                 .ttl(grantResponse.getTtl())
+                .channels(channelsAccessRepository)
+                .channelGroups(channelGroupsAccessRepository)
                 .build();
 
         pnAccessManagerGrantResult.setData(pnAccessManagerGrantData);
-
-        System.out.println(input.raw().request().url().toString());
-
 
         return pnAccessManagerGrantResult;
     }

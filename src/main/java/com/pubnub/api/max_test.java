@@ -62,7 +62,7 @@ public class max_test {
 
         try {
             PNAccessManagerGrantResult moose = pubnub.grant().authKeys(Arrays.asList("key1"))
-                    .channels(Arrays.asList("ch1"))
+                    .channelGroups(Arrays.asList("cg1", "cg2"))
                     .ttl(0).write(true)
                     .sync();
             int max = 11;
