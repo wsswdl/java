@@ -3,5 +3,9 @@ sudo: false
 jdk:
   - oraclejdk7
   - oraclejdk8
+before_install:
+  - ./gradlew -version
+install: ./gradlew assemble --info
+script: ./gradlew clean build install --info
 after_success:
   - bash <(curl -s https://codecov.io/bash)
