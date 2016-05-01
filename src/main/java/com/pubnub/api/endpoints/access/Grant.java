@@ -64,7 +64,7 @@ public class Grant extends Endpoint<Envelope<AccessManagerGrantPayload>, PNAcces
             queryParams.put("channel-group", PubNubUtil.joinString(channelGroups, ","));
         }
 
-        if (authKeys != null & authKeys.size() > 0) {
+        if (authKeys != null && authKeys.size() > 0) {
             queryParams.put("auth", PubNubUtil.joinString(authKeys, ","));
         }
 
