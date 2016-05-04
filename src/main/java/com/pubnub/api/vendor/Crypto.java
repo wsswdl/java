@@ -1,6 +1,7 @@
-package com.pubnub.api;
+package com.pubnub.api.vendor;
 
-import com.pubnub.api.utils.Base64;
+import com.pubnub.api.PubNubErrorBuilder;
+import com.pubnub.api.PubNubException;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.crypto.BadPaddingException;
@@ -65,8 +66,8 @@ public class Crypto {
         }
     }
 
-    private static PubNubError newCryptoError(int code, String message) {
-        return PubNubError.getErrorObject(PubNubError.PNERROBJ_CRYPTO_ERROR, code, message);
+    private static PubNubErrorBuilder newCryptoError(int code, String message) {
+        return PubNubErrorBuilder.getErrorObject(PubNubErrorBuilder.PNERROBJ_CRYPTO_ERROR, code, message);
     }
 
     public String encrypt(String input) throws PubNubException {

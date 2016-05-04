@@ -1,7 +1,7 @@
 package com.pubnub.api.endpoints.channel_groups;
 
 import com.pubnub.api.PubNub;
-import com.pubnub.api.PubNubError;
+import com.pubnub.api.PubNubErrorBuilder;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.PubNubUtil;
 import com.pubnub.api.enums.PNOperationType;
@@ -29,8 +29,8 @@ public class RemoveChannelChannelGroup extends Endpoint<Envelope, PNChannelGroup
     }
 
     @Override
-    protected boolean validateParams() {
-        return true;
+    protected void validateParams() {
+        // TODO
     }
 
     @Override
@@ -41,24 +41,24 @@ public class RemoveChannelChannelGroup extends Endpoint<Envelope, PNChannelGroup
             params.put("remove", PubNubUtil.joinString(channels, ","));
         }
 
-        return service.RemoveChannel(pubnub.getConfiguration().getSubscribeKey(), channelGroup, params);
+        return service.removeChannel(this.getPubnub().getConfiguration().getSubscribeKey(), channelGroup, params);
     }
 
     @Override
     protected PNChannelGroupsRemoveChannelResult createResponse(Response<Envelope> input) throws PubNubException {
         if (input.body() == null) {
-            throw PubNubException.builder().pubnubError(PubNubError.PNERROBJ_PARSING_ERROR).build();
+            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_PARSING_ERROR).build();
         }
 
         return PNChannelGroupsRemoveChannelResult.builder().build();
     }
 
     protected int getConnectTimeout() {
-        return pubnub.getConfiguration().getConnectTimeout();
+        return this.getPubnub().getConfiguration().getConnectTimeout();
     }
 
     protected int getRequestTimeout() {
-        return pubnub.getConfiguration().getNonSubscribeRequestTimeout();
+        return this.getPubnub().getConfiguration().getNonSubscribeRequestTimeout();
     }
 
     @Override

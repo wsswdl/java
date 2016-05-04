@@ -11,31 +11,31 @@ import java.util.List;
 
 public abstract class PubSubBuilder {
 
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    protected List<String> channelSubscriptions;
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PROTECTED)
+    private List<String> channelSubscriptions;
 
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    protected List<String> channelGroupSubscriptions;
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PROTECTED)
+    private List<String> channelGroupSubscriptions;
 
-    @Getter(AccessLevel.NONE)
-    @Setter(AccessLevel.NONE)
-    protected SubscriptionManager subscriptionManager;
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PROTECTED)
+    private SubscriptionManager subscriptionManager;
 
-    public PubSubBuilder(SubscriptionManager subscriptionManager) {
-        this.subscriptionManager = subscriptionManager;
+    public PubSubBuilder(final SubscriptionManager subscriptionManagerInstance) {
+        this.subscriptionManager = subscriptionManagerInstance;
         this.channelSubscriptions = new ArrayList<>();
         this.channelGroupSubscriptions = new ArrayList<>();
     }
 
 
-    public PubSubBuilder channels(List<String> channel) {
+    public PubSubBuilder channels(final List<String> channel) {
         channelSubscriptions.addAll(channel);
         return this;
     }
 
-    public PubSubBuilder channelGroups(List<String> channelGroup) {
+    public PubSubBuilder channelGroups(final List<String> channelGroup) {
         channelGroupSubscriptions.addAll(channelGroup);
         return this;
     }

@@ -1,7 +1,7 @@
 package com.pubnub.api.endpoints.pubsub;
 
 import com.pubnub.api.PubNub;
-import com.pubnub.api.PubNubError;
+import com.pubnub.api.PubNubErrorBuilder;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.PubNubUtil;
 import com.pubnub.api.enums.PNOperationType;
@@ -59,8 +59,8 @@ public class Subscribe extends Endpoint<SubscribeEnvelope, SubscribeEnvelope> {
     }
 
     @Override
-    protected final boolean validateParams() {
-        return true;
+    protected final void validateParams() {
+        // TODO
     }
 
     @Override
@@ -90,14 +90,14 @@ public class Subscribe extends Endpoint<SubscribeEnvelope, SubscribeEnvelope> {
             channelCSV = ",";
         }
 
-        return pubSubService.subscribe(this.pubnub.getConfiguration().getSubscribeKey(), channelCSV,  params);
+        return pubSubService.subscribe(this.getPubnub().getConfiguration().getSubscribeKey(), channelCSV,  params);
     }
 
     @Override
     protected final SubscribeEnvelope createResponse(final Response<SubscribeEnvelope> input) throws PubNubException {
 
         if (input.body() == null) {
-            throw PubNubException.builder().pubnubError(PubNubError.PNERROBJ_PARSING_ERROR).build();
+            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_PARSING_ERROR).build();
         }
 
         return input.body();
@@ -108,7 +108,7 @@ public class Subscribe extends Endpoint<SubscribeEnvelope, SubscribeEnvelope> {
      * @return timeout in seconds
      */
     protected final int getConnectTimeout() {
-        return pubnub.getConfiguration().getConnectTimeout();
+        return this.getPubnub().getConfiguration().getConnectTimeout();
     }
 
     /**
@@ -116,7 +116,7 @@ public class Subscribe extends Endpoint<SubscribeEnvelope, SubscribeEnvelope> {
      * @return timeout in seconds
      */
     protected final int getRequestTimeout() {
-        return pubnub.getConfiguration().getSubscribeTimeout();
+        return this.getPubnub().getConfiguration().getSubscribeTimeout();
     }
 
     @Override

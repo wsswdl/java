@@ -1,7 +1,7 @@
 package com.pubnub.api.endpoints.push;
 
 import com.pubnub.api.PubNub;
-import com.pubnub.api.PubNubError;
+import com.pubnub.api.PubNubErrorBuilder;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.endpoints.Endpoint;
 import com.pubnub.api.enums.PNOperationType;
@@ -21,50 +21,46 @@ public class RemoveAllPushChannelsForDevice extends Endpoint<List<Object>, PNPus
     @Setter private PNPushType pushType;
     @Setter private String deviceId;
 
-    public RemoveAllPushChannelsForDevice(PubNub pubnub) {
-        super(pubnub);
+    public RemoveAllPushChannelsForDevice(final PubNub pubnubInstance) {
+        super(pubnubInstance);
     }
 
     @Override
-    protected boolean validateParams() {
-        if (pushType == null) {
-            return false;
-        }
-
-        return true;
+    protected final void validateParams() {
+        // TODO
     }
 
 
     @Override
-    protected Call<List<Object>> doWork(Map<String, String> params) throws PubNubException {
+    protected final Call<List<Object>> doWork(final Map<String, String> params) throws PubNubException {
         params.put("type", pushType.name().toLowerCase());
 
         PushService service = this.createRetrofit().create(PushService.class);
 
-        return service.removeAllChannelsForDevice(pubnub.getConfiguration().getSubscribeKey(), deviceId, params);
+        return service.removeAllChannelsForDevice(this.getPubnub().getConfiguration().getSubscribeKey(), deviceId, params);
 
     }
 
     @Override
-    protected PNPushRemoveAllChannelsResult createResponse(Response<List<Object>> input) throws PubNubException {
+    protected final PNPushRemoveAllChannelsResult createResponse(final Response<List<Object>> input) throws PubNubException {
         if (input.body() == null) {
-            throw PubNubException.builder().pubnubError(PubNubError.PNERROBJ_PARSING_ERROR).build();
+            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_PARSING_ERROR).build();
         }
 
         return PNPushRemoveAllChannelsResult.builder().build();
     }
 
-    protected int getConnectTimeout() {
-        return pubnub.getConfiguration().getConnectTimeout();
+    protected final int getConnectTimeout() {
+        return this.getPubnub().getConfiguration().getConnectTimeout();
     }
 
-    protected int getRequestTimeout() {
-        return pubnub.getConfiguration().getNonSubscribeRequestTimeout();
+    protected final int getRequestTimeout() {
+        return this.getPubnub().getConfiguration().getNonSubscribeRequestTimeout();
     }
 
     @Override
-    protected PNOperationType getOperationType() {
-        return null; // PNOperationType.PNPushNotificationModifiedChannelsOperations;
+    protected final PNOperationType getOperationType() {
+        return null; // TODO PNOperationType.PNPushNotificationModifiedChannelsOperations;
     }
 
 }

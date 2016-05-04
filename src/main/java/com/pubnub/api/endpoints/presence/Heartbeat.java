@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.pubnub.api.PubNub;
-import com.pubnub.api.PubNubError;
+import com.pubnub.api.PubNubErrorBuilder;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.PubNubUtil;
 import com.pubnub.api.enums.PNOperationType;
@@ -30,15 +30,15 @@ public class Heartbeat extends Endpoint<Envelope, Boolean> {
     }
 
     @Override
-    protected boolean validateParams() {
-        return true;
+    protected void validateParams() {
+        // TODO
     }
 
     @Override
     protected Call<Envelope> doWork(Map<String, String> params) throws PubNubException {
         ObjectWriter ow = new ObjectMapper().writer();
 
-        params.put("heartbeat", String.valueOf(pubnub.getConfiguration().getPresenceTimeout()));
+        params.put("heartbeat", String.valueOf(this.getPubnub().getConfiguration().getPresenceTimeout()));
 
         if (channelGroups != null && channelGroups.size() > 0) {
             params.put("channel-group", PubNubUtil.joinString(channelGroups, ","));
@@ -58,7 +58,7 @@ public class Heartbeat extends Endpoint<Envelope, Boolean> {
             try {
                 stringifiedState = ow.writeValueAsString(state);
             } catch (JsonProcessingException e) {
-                throw PubNubException.builder().pubnubError(PubNubError.PNERROBJ_INVALID_ARGUMENTS).errormsg(e.getMessage()).build();
+                throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_INVALID_ARGUMENTS).errormsg(e.getMessage()).build();
             }
 
             stringifiedState = PubNubUtil.urlEncode(stringifiedState);
@@ -66,7 +66,7 @@ public class Heartbeat extends Endpoint<Envelope, Boolean> {
         }
 
         PresenceService service = this.createRetrofit().create(PresenceService.class);
-        return service.heartbeat(pubnub.getConfiguration().getSubscribeKey(), channelsCSV, params);
+        return service.heartbeat(this.getPubnub().getConfiguration().getSubscribeKey(), channelsCSV, params);
     }
 
     @Override
@@ -75,11 +75,11 @@ public class Heartbeat extends Endpoint<Envelope, Boolean> {
     }
 
     protected int getConnectTimeout() {
-        return pubnub.getConfiguration().getConnectTimeout();
+        return this.getPubnub().getConfiguration().getConnectTimeout();
     }
 
     protected int getRequestTimeout() {
-        return pubnub.getConfiguration().getNonSubscribeRequestTimeout();
+        return this.getPubnub().getConfiguration().getNonSubscribeRequestTimeout();
     }
 
     @Override

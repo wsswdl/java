@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.pubnub.api.PubNub;
-import com.pubnub.api.PubNubError;
+import com.pubnub.api.PubNubErrorBuilder;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.PubNubUtil;
 import com.pubnub.api.enums.PNOperationType;
@@ -12,7 +12,9 @@ import com.pubnub.api.models.server.Envelope;
 import com.pubnub.api.models.consumer.presence.PNSetStateResult;
 import com.pubnub.api.endpoints.Endpoint;
 import com.pubnub.api.managers.SubscriptionManager;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 import retrofit2.Call;
 import retrofit2.Response;
@@ -32,30 +34,20 @@ public class SetState extends Endpoint<Envelope<Map<String, Object>>, PNSetState
     @Setter private List<String> channelGroups;
     @Setter private Object state;
 
-    public SetState(PubNub pubnub, SubscriptionManager subscriptionManager) {
+    public SetState(final PubNub pubnub, final SubscriptionManager subscriptionManagerInstance) {
         super(pubnub);
-        this.subscriptionManager = subscriptionManager;
+        this.subscriptionManager = subscriptionManagerInstance;
         channels = new ArrayList<>();
         channelGroups = new ArrayList<>();
     }
 
     @Override
-    protected boolean validateParams() {
-
-        if (state == null) {
-            return false;
-        }
-
-        if (channels.size() == 0 && channelGroups.size() == 0) {
-            return false;
-        }
-
-
-        return true;
+    protected void validateParams() {
+        // TODO
     }
 
     @Override
-    protected Call<Envelope<Map<String, Object>>> doWork(Map<String, String> params) throws PubNubException {
+    protected final Call<Envelope<Map<String, Object>>> doWork(final Map<String, String> params) throws PubNubException {
         ObjectWriter ow = new ObjectMapper().writer();
         String stringifiedState;
 
@@ -71,22 +63,28 @@ public class SetState extends Endpoint<Envelope<Map<String, Object>>, PNSetState
         try {
             stringifiedState = ow.writeValueAsString(state);
         } catch (JsonProcessingException e) {
-            throw PubNubException.builder().pubnubError(PubNubError.PNERROBJ_INVALID_ARGUMENTS).errormsg(e.getMessage()).build();
+            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_INVALID_ARGUMENTS).errormsg(e.getMessage()).build();
         }
 
         stringifiedState = PubNubUtil.urlEncode(stringifiedState);
         params.put("state", stringifiedState);
 
-        String channelCSV = channels.size() > 0 ? PubNubUtil.joinString(channels, ",") : ",";
+        String channelCSV;
 
-        return service.setState(pubnub.getConfiguration().getSubscribeKey(), channelCSV, this.pubnub.getConfiguration().getUuid(), params);
+        if (channels.size() > 0) {
+            channelCSV =  PubNubUtil.joinString(channels, ",");
+        } else {
+            channelCSV  = ",";
+        }
+
+        return service.setState(this.getPubnub().getConfiguration().getSubscribeKey(), channelCSV, this.getPubnub().getConfiguration().getUuid(), params);
     }
 
     @Override
     protected PNSetStateResult createResponse(Response<Envelope<Map<String, Object>>> input) throws PubNubException {
 
         if (input.body() == null) {
-            throw PubNubException.builder().pubnubError(PubNubError.PNERROBJ_PARSING_ERROR).build();
+            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_PARSING_ERROR).build();
         }
 
         PNSetStateResult.PNSetStateResultBuilder pnSetStateResult = PNSetStateResult.builder()
@@ -96,11 +94,11 @@ public class SetState extends Endpoint<Envelope<Map<String, Object>>, PNSetState
     }
 
     protected int getConnectTimeout() {
-        return pubnub.getConfiguration().getConnectTimeout();
+        return this.getPubnub().getConfiguration().getConnectTimeout();
     }
 
     protected int getRequestTimeout() {
-        return pubnub.getConfiguration().getNonSubscribeRequestTimeout();
+        return this.getPubnub().getConfiguration().getNonSubscribeRequestTimeout();
     }
 
     @Override

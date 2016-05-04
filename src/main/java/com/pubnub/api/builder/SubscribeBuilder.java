@@ -28,32 +28,32 @@ public class SubscribeBuilder extends PubSubBuilder  {
         super(subscriptionManager);
     }
 
-    public SubscribeBuilder withPresence() {
+    public final SubscribeBuilder withPresence() {
         this.presenceEnabled = true;
         return this;
     }
 
-    public SubscribeBuilder withTimetoken(final Long timetoken) {
-        this.timetoken = timetoken;
+    public final SubscribeBuilder withTimetoken(final Long newTimetoken) {
+        this.timetoken = newTimetoken;
         return this;
     }
 
-    public void execute() {
+    public final void execute() {
         SubscribeOperation subscribeOperation = SubscribeOperation.builder()
-                .channels(channelSubscriptions)
-                .channelGroups(channelGroupSubscriptions)
+                .channels(this.getChannelSubscriptions())
+                .channelGroups(this.getChannelGroupSubscriptions())
                 .timetoken(timetoken)
                 .presenceEnabled(presenceEnabled)
                 .build();
 
-        this.subscriptionManager.adaptSubscribeBuilder(subscribeOperation);
+        this.getSubscriptionManager().adaptSubscribeBuilder(subscribeOperation);
     }
 
-    public SubscribeBuilder channels(final List<String> channels) {
+    public final SubscribeBuilder channels(final List<String> channels) {
         return (SubscribeBuilder) super.channels(channels);
     }
 
-    public SubscribeBuilder channelGroups(final List<String> channelGroups) {
+    public final SubscribeBuilder channelGroups(final List<String> channelGroups) {
         return (SubscribeBuilder) super.channelGroups(channelGroups);
     }
 

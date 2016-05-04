@@ -3,9 +3,9 @@ package com.pubnub.api.endpoints;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.pubnub.api.Crypto;
+import com.pubnub.api.vendor.Crypto;
 import com.pubnub.api.PubNub;
-import com.pubnub.api.PubNubError;
+import com.pubnub.api.PubNubErrorBuilder;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.models.consumer.history.PNHistoryItemResult;
@@ -26,6 +26,8 @@ import java.util.Map;
 @Accessors(chain = true, fluent = true)
 public class History extends Endpoint<JsonNode, PNHistoryResult> {
 
+    private static final int MAX_HISTORY_ITEMS = 100;
+
     @Setter private String channel;
     @Setter private Long start;
     @Setter private Long end;
@@ -45,8 +47,8 @@ public class History extends Endpoint<JsonNode, PNHistoryResult> {
     }
 
     @Override
-    protected boolean validateParams() {
-        return true;
+    protected void validateParams() {
+        // TODO
     }
 
     @Override
@@ -62,10 +64,10 @@ public class History extends Endpoint<JsonNode, PNHistoryResult> {
             params.put("include_token", String.valueOf(includeTimetoken));
         }
 
-        if (count != null && count > 0 && count <= 10) {
+        if (count != null && count > 0 && count <= MAX_HISTORY_ITEMS) {
             params.put("count", String.valueOf(count));
         } else {
-            params.put("count", "100");
+            params.put("count", String.valueOf(MAX_HISTORY_ITEMS));
         }
 
         if (start != null) {
@@ -75,7 +77,7 @@ public class History extends Endpoint<JsonNode, PNHistoryResult> {
             params.put("end", Long.toString(end).toLowerCase());
         }
 
-        return service.fetchHistory(pubnub.getConfiguration().getSubscribeKey(), channel, params);
+        return service.fetchHistory(this.getPubnub().getConfiguration().getSubscribeKey(), channel, params);
     }
 
     @Override
@@ -111,11 +113,11 @@ public class History extends Endpoint<JsonNode, PNHistoryResult> {
     }
 
     protected int getConnectTimeout() {
-        return pubnub.getConfiguration().getConnectTimeout();
+        return this.getPubnub().getConfiguration().getConnectTimeout();
     }
 
     protected int getRequestTimeout() {
-        return pubnub.getConfiguration().getNonSubscribeRequestTimeout();
+        return this.getPubnub().getConfiguration().getNonSubscribeRequestTimeout();
     }
 
     @Override
@@ -124,11 +126,11 @@ public class History extends Endpoint<JsonNode, PNHistoryResult> {
     }
 
     private Object processMessage(JsonNode message) throws PubNubException {
-        if (this.pubnub.getConfiguration().getCipherKey() == null) {
+        if (this.getPubnub().getConfiguration().getCipherKey() == null) {
             return message;
         }
 
-        Crypto crypto = new Crypto(pubnub.getConfiguration().getCipherKey());
+        Crypto crypto = new Crypto(this.getPubnub().getConfiguration().getCipherKey());
         String outputText = crypto.decrypt(message.asText());
 
         ObjectMapper mapper = new ObjectMapper();
@@ -136,7 +138,7 @@ public class History extends Endpoint<JsonNode, PNHistoryResult> {
         try {
             outputObject = mapper.readValue(outputText, JsonNode.class);
         } catch (IOException e) {
-            throw PubNubException.builder().pubnubError(PubNubError.PNERROBJ_PARSING_ERROR).errormsg(e.getMessage()).build();
+            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_PARSING_ERROR).errormsg(e.getMessage()).build();
         }
 
         return outputObject;

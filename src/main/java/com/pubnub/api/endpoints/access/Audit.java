@@ -1,7 +1,7 @@
 package com.pubnub.api.endpoints.access;
 
 import com.pubnub.api.PubNub;
-import com.pubnub.api.PubNubError;
+import com.pubnub.api.PubNubErrorBuilder;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.PubNubUtil;
 import com.pubnub.api.enums.PNOperationType;
@@ -24,27 +24,23 @@ public class Audit extends Endpoint<Envelope<AccessManagerAuditPayload>, PNAcces
     @Setter private String channel;
     @Setter private String channelGroup;
 
-    public Audit(PubNub pubnub) {
-        super(pubnub);
+    public Audit(final PubNub pubnubInstance) {
+        super(pubnubInstance);
     }
 
     @Override
-    protected boolean validateParams() {
-        if (pubnub.getConfiguration().getSecretKey() != null && pubnub.getConfiguration().getSecretKey().length() == 0) {
-            return false;
-        }
-
-        return true;
+    protected void validateParams() {
+        // TODO
     }
 
     @Override
-    protected Call<Envelope<AccessManagerAuditPayload>> doWork(Map<String, String> queryParams) throws PubNubException {
+    protected final Call<Envelope<AccessManagerAuditPayload>> doWork(final Map<String, String> queryParams) throws PubNubException {
         String signature;
 
-        int timestamp = pubnub.getTimestamp();
+        int timestamp = this.getPubnub().getTimestamp();
 
-        String signInput = this.pubnub.getConfiguration().getSubscribeKey() + "\n"
-                + this.pubnub.getConfiguration().getPublishKey() + "\n"
+        String signInput = this.getPubnub().getConfiguration().getSubscribeKey() + "\n"
+                + this.getPubnub().getConfiguration().getPublishKey() + "\n"
                 + "audit" + "\n";
 
         queryParams.put("timestamp", String.valueOf(timestamp));
@@ -63,20 +59,20 @@ public class Audit extends Endpoint<Envelope<AccessManagerAuditPayload>, PNAcces
 
         signInput += PubNubUtil.preparePamArguments(queryParams);
 
-        signature = PubNubUtil.signSHA256(this.pubnub.getConfiguration().getSecretKey(), signInput);
+        signature = PubNubUtil.signSHA256(this.getPubnub().getConfiguration().getSecretKey(), signInput);
 
         queryParams.put("signature", signature);
 
         AccessManagerService service = this.createRetrofit().create(AccessManagerService.class);
-        return service.audit(pubnub.getConfiguration().getSubscribeKey(), queryParams);
+        return service.audit(this.getPubnub().getConfiguration().getSubscribeKey(), queryParams);
     }
 
     @Override
-    protected PNAccessManagerAuditResult createResponse(final Response<Envelope<AccessManagerAuditPayload>> input) throws PubNubException {
+    protected final PNAccessManagerAuditResult createResponse(final Response<Envelope<AccessManagerAuditPayload>> input) throws PubNubException {
         PNAccessManagerAuditResult.PNAccessManagerAuditResultBuilder pnAccessManagerAuditResult = PNAccessManagerAuditResult.builder();
 
         if (input.body() == null || input.body().getPayload() == null) {
-            throw PubNubException.builder().pubnubError(PubNubError.PNERROBJ_PARSING_ERROR).build();
+            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_PARSING_ERROR).build();
         }
 
         AccessManagerAuditPayload auditPayload = input.body().getPayload();
@@ -91,16 +87,16 @@ public class Audit extends Endpoint<Envelope<AccessManagerAuditPayload>, PNAcces
         return pnAccessManagerAuditResult.build();
     }
 
-    protected int getConnectTimeout() {
-        return pubnub.getConfiguration().getConnectTimeout();
+    protected final int getConnectTimeout() {
+        return this.getPubnub().getConfiguration().getConnectTimeout();
     }
 
-    protected int getRequestTimeout() {
-        return pubnub.getConfiguration().getNonSubscribeRequestTimeout();
+    protected final int getRequestTimeout() {
+        return this.getPubnub().getConfiguration().getNonSubscribeRequestTimeout();
     }
 
     @Override
-    protected PNOperationType getOperationType() {
+    protected final PNOperationType getOperationType() {
         return PNOperationType.PNAccessManagerAudit;
     }
 

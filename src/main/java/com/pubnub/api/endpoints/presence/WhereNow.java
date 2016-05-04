@@ -1,7 +1,7 @@
 package com.pubnub.api.endpoints.presence;
 
 import com.pubnub.api.PubNub;
-import com.pubnub.api.PubNubError;
+import com.pubnub.api.PubNubErrorBuilder;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.models.consumer.presence.PNWhereNowResult;
@@ -20,45 +20,51 @@ public class WhereNow extends Endpoint<Envelope<WhereNowPayload>, PNWhereNowResu
 
     @Setter private String uuid;
 
-    public WhereNow(PubNub pubnub) {
-        super(pubnub);
+    public WhereNow(final PubNub pubnubInstance) {
+        super(pubnubInstance);
     }
 
     @Override
-    protected boolean validateParams() {
-        return true;
+    protected void validateParams() {
+
     }
 
     @Override
-    protected Call<Envelope<WhereNowPayload>> doWork(Map<String, String> params) {
+    protected final Call<Envelope<WhereNowPayload>> doWork(final Map<String, String> params) {
         PresenceService service = this.createRetrofit().create(PresenceService.class);
-        return service.whereNow(pubnub.getConfiguration().getSubscribeKey(),
-                this.uuid != null ? this.uuid : pubnub.getConfiguration().getUuid(), params);
-    }
 
-    @Override
-    protected PNWhereNowResult createResponse(Response<Envelope<WhereNowPayload>> input) throws PubNubException {
-        if (input.body() == null || input.body().getPayload() == null) {
-            throw PubNubException.builder().pubnubError(PubNubError.PNERROBJ_PARSING_ERROR).build();
+        String requestUUID;
+
+        if (this.uuid != null) {
+            requestUUID = this.uuid;
+        } else {
+            requestUUID = this.getPubnub().getConfiguration().getUuid();
         }
 
-        PNWhereNowResult pnPresenceWhereNowResult = PNWhereNowResult.builder()
-            .channels(input.body().getPayload().getChannels())
-            .build();
-
-        return pnPresenceWhereNowResult;
-    }
-
-    protected int getConnectTimeout() {
-        return pubnub.getConfiguration().getConnectTimeout();
-    }
-
-    protected int getRequestTimeout() {
-        return pubnub.getConfiguration().getNonSubscribeRequestTimeout();
+        return service.whereNow(this.getPubnub().getConfiguration().getSubscribeKey(), requestUUID, params);
     }
 
     @Override
-    protected PNOperationType getOperationType() {
+    protected final PNWhereNowResult createResponse(final Response<Envelope<WhereNowPayload>> input) throws PubNubException {
+        if (input.body() == null || input.body().getPayload() == null) {
+            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_PARSING_ERROR).build();
+        }
+
+        return PNWhereNowResult.builder()
+            .channels(input.body().getPayload().getChannels())
+            .build();
+    }
+
+    protected final int getConnectTimeout() {
+        return this.getPubnub().getConfiguration().getConnectTimeout();
+    }
+
+    protected final int getRequestTimeout() {
+        return this.getPubnub().getConfiguration().getNonSubscribeRequestTimeout();
+    }
+
+    @Override
+    protected final PNOperationType getOperationType() {
         return PNOperationType.PNWhereNowOperation;
     }
 

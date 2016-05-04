@@ -29,8 +29,8 @@ public class EndpointTest extends TestHarness {
         Endpoint<Object, Object> endpoint =  new Endpoint<Object, Object>(pubnub) {
 
             @Override
-            protected boolean validateParams() {
-                return false;
+            protected void validateParams() {
+                // TODO
             }
 
             @Override

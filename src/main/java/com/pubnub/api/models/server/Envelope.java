@@ -8,14 +8,14 @@ import lombok.Setter;
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Envelope<T> {
-    int status;
-    String message;
-    String service;
-    T payload;
-    int occupancy;
-    Object uuids;
-    String action;
+    private int status;
+    private String message;
+    private String service;
+    private T payload;
+    private int occupancy;
+    private Object uuids;
+    private String action;
 
-    boolean error;
+    private boolean error;
 
 }

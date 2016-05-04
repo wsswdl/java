@@ -18,7 +18,7 @@ import java.util.Map;
 @Accessors(chain = true, fluent = true)
 public class Leave extends Endpoint<Envelope, Boolean> {
 
-    public Leave(PubNub pubnub) {
+    public Leave(final PubNub pubnub) {
         super(pubnub);
         channels = new ArrayList<>();
         channelGroups = new ArrayList<>();
@@ -28,12 +28,12 @@ public class Leave extends Endpoint<Envelope, Boolean> {
     @Setter private List<String> channelGroups;
 
     @Override
-    protected boolean validateParams() {
-        return true;
+    protected void validateParams() {
+        // TODO
     }
 
     @Override
-    protected Call<Envelope> doWork(Map<String, String> params) {
+    protected final Call<Envelope> doWork(final Map<String, String> params) {
         String channelCSV;
         PresenceService service = this.createRetrofit().create(PresenceService.class);
 
@@ -47,34 +47,34 @@ public class Leave extends Endpoint<Envelope, Boolean> {
             channelCSV = ",";
         }
 
-        return service.leave(this.pubnub.getConfiguration().getSubscribeKey(), channelCSV, params);
+        return service.leave(this.getPubnub().getConfiguration().getSubscribeKey(), channelCSV, params);
     }
 
     @Override
-    protected Boolean createResponse(Response<Envelope> input) throws PubNubException {
+    protected final Boolean createResponse(final Response<Envelope> input) throws PubNubException {
         return true;
     }
 
-    protected int getConnectTimeout() {
-        return pubnub.getConfiguration().getConnectTimeout();
+    protected final int getConnectTimeout() {
+        return this.getPubnub().getConfiguration().getConnectTimeout();
     }
 
-    protected int getRequestTimeout() {
-        return pubnub.getConfiguration().getNonSubscribeRequestTimeout();
+    protected final int getRequestTimeout() {
+        return this.getPubnub().getConfiguration().getNonSubscribeRequestTimeout();
     }
 
     @Override
-    protected PNOperationType getOperationType() {
+    protected final PNOperationType getOperationType() {
         return PNOperationType.PNUnsubscribeOperation;
     }
 
     @Override
-    protected List<String> getAffectedChannels() {
+    protected final List<String> getAffectedChannels() {
         return channels;
     }
 
     @Override
-    protected List<String> getAffectedChannelGroups() {
+    protected final List<String> getAffectedChannelGroups() {
         return channelGroups;
     }
 

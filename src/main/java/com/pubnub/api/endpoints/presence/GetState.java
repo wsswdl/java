@@ -24,39 +24,42 @@ public class GetState extends Endpoint<Envelope<Object>, PNGetStateResult> {
     @Setter private List<String> channelGroups;
     @Setter private String uuid;
 
-    public GetState(PubNub pubnub) {
+    public GetState(final PubNub pubnub) {
         super(pubnub);
         channels = new ArrayList<>();
         channelGroups = new ArrayList<>();
     }
 
     @Override
-    protected boolean validateParams() {
-
-        if (channels.size() == 0 && channelGroups.size() == 0) {
-            return false;
-        }
-
-        return true;
+    protected void validateParams() {
+        // TODO
     }
 
     @Override
-    protected Call<Envelope<Object>> doWork(Map<String, String> params) throws PubNubException {
+    protected final Call<Envelope<Object>> doWork(final Map<String, String> params) throws PubNubException {
         PresenceService service = this.createRetrofit().create(PresenceService.class);
 
         if (channelGroups.size() > 0) {
             params.put("channel-group", PubNubUtil.joinString(channelGroups, ","));
         }
 
-        String channelCSV = channels.size() > 0 ? PubNubUtil.joinString(channels, ",") : ",";
+        String channelCSV = ",";
+        String selectedUUID = this.getPubnub().getConfiguration().getUuid();
 
-        String selectedUUID = uuid != null ? uuid : pubnub.getConfiguration().getUuid();
+        if (channels.size() > 0) {
+            channelCSV = PubNubUtil.joinString(channels, ",");
+        }
 
-        return service.getState(pubnub.getConfiguration().getSubscribeKey(), channelCSV, selectedUUID, params);
+        if (uuid != null) {
+            selectedUUID = uuid;
+        }
+
+
+        return service.getState(this.getPubnub().getConfiguration().getSubscribeKey(), channelCSV, selectedUUID, params);
     }
 
     @Override
-    protected PNGetStateResult createResponse(final Response<Envelope<Object>> input) throws PubNubException {
+    protected final PNGetStateResult createResponse(final Response<Envelope<Object>> input) throws PubNubException {
         Map<String, Object> stateMappings;
 
         if (channels.size() == 1 && channelGroups.size() == 0) {
@@ -69,16 +72,16 @@ public class GetState extends Endpoint<Envelope<Object>, PNGetStateResult> {
         return PNGetStateResult.builder().stateByUUID(stateMappings).build();
     }
 
-    protected int getConnectTimeout() {
-        return pubnub.getConfiguration().getConnectTimeout();
+    protected final int getConnectTimeout() {
+        return this.getPubnub().getConfiguration().getConnectTimeout();
     }
 
-    protected int getRequestTimeout() {
-        return pubnub.getConfiguration().getNonSubscribeRequestTimeout();
+    protected final int getRequestTimeout() {
+        return this.getPubnub().getConfiguration().getNonSubscribeRequestTimeout();
     }
 
     @Override
-    protected PNOperationType getOperationType() {
+    protected final PNOperationType getOperationType() {
         return PNOperationType.PNGetState;
     }
 

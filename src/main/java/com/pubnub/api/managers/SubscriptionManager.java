@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pubnub.api.callbacks.PNCallback;
 import com.pubnub.api.callbacks.SubscribeCallback;
-import com.pubnub.api.Crypto;
+import com.pubnub.api.vendor.Crypto;
 import com.pubnub.api.PubNub;
-import com.pubnub.api.PubNubError;
+import com.pubnub.api.PubNubErrorBuilder;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.builder.dto.SubscribeOperation;
 import com.pubnub.api.builder.dto.UnsubscribeOperation;
@@ -28,10 +28,18 @@ import lombok.extern.slf4j.Slf4j;
 import retrofit2.Call;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @Slf4j
 public class SubscriptionManager {
+
+
+    private static final int SECOND = 1000;
 
     private Map<String, SubscriptionItem> subscribedChannels;
     private Map<String, SubscriptionItem> subscribedChannelGroups;
@@ -50,22 +58,22 @@ public class SubscriptionManager {
      */
     private String region;
 
-    Timer timer;
+    private Timer timer;
 
-    public SubscriptionManager(PubNub pubnub) {
+    public SubscriptionManager(final PubNub pubnubInstance) {
         this.subscribedChannelGroups = new HashMap<>();
         this.subscribedChannels = new HashMap<>();
-        this.pubnub = pubnub;
+        this.pubnub = pubnubInstance;
         this.listeners = new ArrayList<>();
         this.stateStorage = new HashMap<>();
     }
 
 
-    public final synchronized void addListener(SubscribeCallback listener) {
+    public final synchronized void addListener(final SubscribeCallback listener) {
         listeners.add(listener);
     }
 
-    public final synchronized void removeListener(SubscribeCallback listener) {
+    public final synchronized void removeListener(final SubscribeCallback listener) {
         listeners.remove(listener);
     }
 
@@ -74,12 +82,12 @@ public class SubscriptionManager {
         this.registerHeartbeatTimer();
     }
 
-    public synchronized void stop() {
+    public final synchronized void stop() {
         stopHeartbeatTimer();
         stopSubscribeLoop();
     }
 
-    public final synchronized void adaptStateBuilder(List<String> channels, List<String> channelGroups, Object state) {
+    public final synchronized void adaptStateBuilder(final List<String> channels, final List<String> channelGroups, final Object state) {
         for (String channel: channels) {
             stateStorage.put(channel, state);
         }
@@ -132,7 +140,7 @@ public class SubscriptionManager {
             .channels(unsubscribeOperation.getChannels()).channelGroups(unsubscribeOperation.getChannelGroups())
             .async(new PNCallback<Boolean>() {
                 @Override
-                public void onResponse(Boolean result, PNStatus status) {
+                public void onResponse(final Boolean result, final PNStatus status) {
                     announce(status);
                 }
         });
@@ -150,7 +158,7 @@ public class SubscriptionManager {
             public void run() {
                 performHeartbeatLoop();
             }
-        }, 0, pubnub.getConfiguration().getHeartbeatInterval() * 1000);
+        }, 0, pubnub.getConfiguration().getHeartbeatInterval() * SECOND);
 
     }
 
@@ -195,7 +203,7 @@ public class SubscriptionManager {
                 .filterExpression(pubnub.getConfiguration().getFilterExpression())
                 .async(new PNCallback<SubscribeEnvelope>() {
                     @Override
-                    public void onResponse(SubscribeEnvelope result, PNStatus status) {
+                    public void onResponse(final SubscribeEnvelope result, final PNStatus status) {
                         if (status.isError()) {
 
                             if (status.getCategory() == PNStatusCategory.PNTimeoutCategory) {
@@ -253,7 +261,7 @@ public class SubscriptionManager {
                 .channels(presenceChannels).channelGroups(presenceChannelGroups).state(stateStorage)
                 .async(new PNCallback<Boolean>() {
                     @Override
-                    public void onResponse(Boolean result, PNStatus status) {
+                    public void onResponse(final Boolean result, final PNStatus status) {
                         PNHeartbeatNotificationOptions heartbeatVerbosity = pubnub
                                 .getConfiguration().getHeartbeatNotificationOptions();
 
@@ -325,7 +333,7 @@ public class SubscriptionManager {
         }
     }
 
-    private Object processMessage(Object input) throws PubNubException {
+    private Object processMessage(final Object input) throws PubNubException {
         if (pubnub.getConfiguration().getCipherKey() == null) {
             return input;
         }
@@ -338,7 +346,7 @@ public class SubscriptionManager {
         try {
             outputObject = mapper.readValue(outputText, JsonNode.class);
         } catch (IOException e) {
-            throw PubNubException.builder().pubnubError(PubNubError.PNERROBJ_PARSING_ERROR).errormsg(e.getMessage()).build();
+            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_PARSING_ERROR).errormsg(e.getMessage()).build();
         }
 
         return outputObject;

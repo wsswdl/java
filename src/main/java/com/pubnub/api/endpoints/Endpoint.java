@@ -1,15 +1,17 @@
 package com.pubnub.api.endpoints;
 
 
+import com.pubnub.api.PubNubErrorBuilder;
 import com.pubnub.api.callbacks.PNCallback;
 import com.pubnub.api.PubNub;
-import com.pubnub.api.PubNubError;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.enums.PNLogVerbosity;
 import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.enums.PNStatusCategory;
 import com.pubnub.api.models.consumer.PNErrorData;
 import com.pubnub.api.models.consumer.PNStatus;
+import lombok.AccessLevel;
+import lombok.Getter;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
@@ -27,10 +29,15 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class Endpoint<Input, Output> {
 
-    protected PubNub pubnub;
+    private static final int STATUS_SUCCESS = 200;
+    private static final int STATUS_BAD_REQUEST = 400;
+    private static final int STATUS_ACCESS_DENIED = 403;
 
-    public Endpoint(PubNub pubnub) {
-        this.pubnub = pubnub;
+    @Getter(AccessLevel.PROTECTED)
+    private PubNub pubnub;
+
+    public Endpoint(final PubNub pubnubInstance) {
+        this.pubnub = pubnubInstance;
     }
 
 
@@ -45,13 +52,13 @@ public abstract class Endpoint<Input, Output> {
             serverResponse = call.execute();
         } catch (IOException e) {
             throw PubNubException.builder()
-                    .pubnubError(PubNubError.PNERROBJ_PARSING_ERROR)
+                    .pubnubError(PubNubErrorBuilder.PNERROBJ_PARSING_ERROR)
                     .errormsg(e.toString())
                     .affectedCall(call)
                     .build();
         }
 
-        if (!serverResponse.isSuccessful() || serverResponse.code() != 200) {
+        if (!serverResponse.isSuccessful() || serverResponse.code() != STATUS_SUCCESS) {
             String responseBodyText;
 
             try {
@@ -61,7 +68,7 @@ public abstract class Endpoint<Input, Output> {
             }
 
             throw PubNubException.builder()
-                    .pubnubError(PubNubError.PNERROBJ_HTTP_ERROR)
+                    .pubnubError(PubNubErrorBuilder.PNERROBJ_HTTP_ERROR)
                     .errormsg(responseBodyText)
                     .statusCode(serverResponse.code())
                     .affectedCall(call)
@@ -82,7 +89,7 @@ public abstract class Endpoint<Input, Output> {
         } catch (PubNubException e) {
 
             PubNubException pubnubException = PubNubException.builder()
-                    .pubnubError(PubNubError.PNERROBJ_HTTP_ERROR)
+                    .pubnubError(PubNubErrorBuilder.PNERROBJ_HTTP_ERROR)
                     .errormsg(e.getMessage())
                     .build();
 
@@ -95,7 +102,7 @@ public abstract class Endpoint<Input, Output> {
             public void onResponse(final Call<Input> call, final Response<Input> response) {
                 Output callbackResponse;
 
-                if (!response.isSuccessful() || response.code() != 200) {
+                if (!response.isSuccessful() || response.code() != STATUS_SUCCESS) {
 
                     String responseBodyText;
 
@@ -107,16 +114,16 @@ public abstract class Endpoint<Input, Output> {
 
                     PNStatusCategory pnStatusCategory = PNStatusCategory.PNUnknownCategory;
                     PubNubException ex = PubNubException.builder()
-                            .pubnubError(PubNubError.PNERROBJ_HTTP_ERROR)
+                            .pubnubError(PubNubErrorBuilder.PNERROBJ_HTTP_ERROR)
                             .errormsg(responseBodyText)
                             .statusCode(response.code())
                             .build();
 
-                    if (response.code() == 403) {
+                    if (response.code() == STATUS_ACCESS_DENIED) {
                         pnStatusCategory = PNStatusCategory.PNAccessDeniedCategory;
                     }
 
-                    if (response.code() == 400) {
+                    if (response.code() == STATUS_BAD_REQUEST) {
                         pnStatusCategory = PNStatusCategory.PNBadRequestCategory;
                     }
 
@@ -129,7 +136,7 @@ public abstract class Endpoint<Input, Output> {
                 } catch (PubNubException e) {
 
                     PubNubException pubnubException = PubNubException.builder()
-                            .pubnubError(PubNubError.PNERROBJ_PARSING_ERROR)
+                            .pubnubError(PubNubErrorBuilder.PNERROBJ_PARSING_ERROR)
                             .errormsg(e.getMessage())
                             .statusCode(response.code())
                             .build();
@@ -151,13 +158,13 @@ public abstract class Endpoint<Input, Output> {
                 try {
                     throw throwable;
                 } catch (UnknownHostException networkException) {
-                    pubnubException.pubnubError(PubNubError.PNERROBJ_CONNECTION_NOT_SET);
+                    pubnubException.pubnubError(PubNubErrorBuilder.PNERROBJ_CONNECTION_NOT_SET);
                     pnStatusCategory = PNStatusCategory.PNUnexpectedDisconnectCategory;
                 } catch (SocketTimeoutException socketTimeoutException) {
-                    pubnubException.pubnubError(PubNubError.PNERROBJ_SUBSCRIBE_TIMEOUT);
+                    pubnubException.pubnubError(PubNubErrorBuilder.PNERROBJ_SUBSCRIBE_TIMEOUT);
                     pnStatusCategory = PNStatusCategory.PNTimeoutCategory;
                 } catch (Throwable throwable1) {
-                    pubnubException.pubnubError(PubNubError.PNERROBJ_HTTP_ERROR);
+                    pubnubException.pubnubError(PubNubErrorBuilder.PNERROBJ_HTTP_ERROR);
                 }
 
                 callback.onResponse(null, createStatusResponse(pnStatusCategory, null, pubnubException.build()));
@@ -197,7 +204,7 @@ public abstract class Endpoint<Input, Output> {
 
         return pnStatus.build();
     }
-    
+
     protected final Retrofit createRetrofit() {
         OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
         httpClient.readTimeout(this.getRequestTimeout(), TimeUnit.SECONDS);
@@ -235,7 +242,7 @@ public abstract class Endpoint<Input, Output> {
         return params;
     }
 
-    protected abstract boolean validateParams();
+    protected abstract void validateParams();
 
     protected abstract Call<Input> doWork(Map<String, String> baseParams) throws PubNubException;
     protected abstract Output createResponse(Response<Input> input) throws PubNubException;

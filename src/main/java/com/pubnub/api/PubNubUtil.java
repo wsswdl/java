@@ -1,6 +1,6 @@
 package com.pubnub.api;
 
-import com.pubnub.api.utils.Base64;
+import com.pubnub.api.vendor.Base64;
 
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
@@ -13,20 +13,20 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-/**
- * Created by Frederick on 3/30/16.
- */
-public class PubNubUtil {
+public final class PubNubUtil {
 
+    private PubNubUtil() {
 
-    public static String joinString(List<String> val, String delim){
+    }
+
+    public static String joinString(List<String> val, String delim) {
         StringBuilder builder = new StringBuilder();
-        for(String l: val){
+        for (String l: val) {
             builder.append(l);
-            builder.append(",");
+            builder.append(delim);
         }
 
-        return builder.toString().substring(0,builder.toString().length() - 1);
+        return builder.toString().substring(0, builder.toString().length() - 1);
 
     }
 
@@ -71,7 +71,7 @@ public class PubNubUtil {
         }
     }
 
-    public static String preparePamArguments(Map<String, String> pamArgs){
+    public static String preparePamArguments(Map<String, String> pamArgs) {
         Set<String> pamKeys = new TreeSet(pamArgs.keySet());
         String stringifiedArguments = "";
         int i = 0;
@@ -98,19 +98,19 @@ public class PubNubUtil {
         try {
             sha256HMAC = Mac.getInstance("HmacSHA256");
         } catch (NoSuchAlgorithmException e) {
-            throw PubNubException.builder().pubnubError(PubNubError.PNERROBJ_CRYPTO_ERROR).errormsg(e.getMessage()).build();
+            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_CRYPTO_ERROR).errormsg(e.getMessage()).build();
         }
 
         try {
             sha256HMAC.init(secretKey);
         } catch (InvalidKeyException e) {
-            throw PubNubException.builder().pubnubError(PubNubError.PNERROBJ_CRYPTO_ERROR).errormsg(e.getMessage()).build();
+            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_CRYPTO_ERROR).errormsg(e.getMessage()).build();
         }
 
         try {
             hmacData = sha256HMAC.doFinal(data.getBytes("UTF-8"));
         } catch (UnsupportedEncodingException e) {
-            throw PubNubException.builder().pubnubError(PubNubError.PNERROBJ_CRYPTO_ERROR).errormsg(e.getMessage()).build();
+            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_CRYPTO_ERROR).errormsg(e.getMessage()).build();
         }
 
         return new String(Base64.encode(hmacData, 0)).replace('+', '-').replace('/', '_');

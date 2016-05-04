@@ -1,7 +1,7 @@
 package com.pubnub.api.endpoints.channel_groups;
 
 import com.pubnub.api.PubNub;
-import com.pubnub.api.PubNubError;
+import com.pubnub.api.PubNubErrorBuilder;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.PubNubUtil;
 import com.pubnub.api.enums.PNOperationType;
@@ -23,46 +23,46 @@ public class AddChannelChannelGroup extends Endpoint<Envelope, PNChannelGroupsAd
     @Setter private List<String> channels;
 
 
-    public AddChannelChannelGroup(PubNub pubnub) {
-        super(pubnub);
+    public AddChannelChannelGroup(final PubNub pubnubInstance) {
+        super(pubnubInstance);
         channels = new ArrayList<>();
     }
 
     @Override
-    protected boolean validateParams() {
-        return true;
+    protected void validateParams() {
+        // TODO
     }
 
     @Override
-    protected Call<Envelope> doWork(final Map<String, String> params) {
+    protected final Call<Envelope> doWork(final Map<String, String> params) {
         ChannelGroupService service = this.createRetrofit().create(ChannelGroupService.class);
 
         if (channels.size() > 0) {
             params.put("add", PubNubUtil.joinString(channels, ","));
         }
 
-        return service.AddChannelChannelGroup(pubnub.getConfiguration().getSubscribeKey(), channelGroup, params);
+        return service.addChannelChannelGroup(this.getPubnub().getConfiguration().getSubscribeKey(), channelGroup, params);
     }
 
     @Override
-    protected PNChannelGroupsAddChannelResult createResponse(Response<Envelope> input) throws PubNubException {
+    protected final PNChannelGroupsAddChannelResult createResponse(final Response<Envelope> input) throws PubNubException {
         if (input.body() == null) {
-            throw PubNubException.builder().pubnubError(PubNubError.PNERROBJ_PARSING_ERROR).build();
+            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_PARSING_ERROR).build();
         }
 
         return PNChannelGroupsAddChannelResult.builder().build();
     }
 
-    protected int getConnectTimeout() {
-        return pubnub.getConfiguration().getConnectTimeout();
+    protected final int getConnectTimeout() {
+        return this.getPubnub().getConfiguration().getConnectTimeout();
     }
 
-    protected int getRequestTimeout() {
-        return pubnub.getConfiguration().getNonSubscribeRequestTimeout();
+    protected final int getRequestTimeout() {
+        return this.getPubnub().getConfiguration().getNonSubscribeRequestTimeout();
     }
 
     @Override
-    protected PNOperationType getOperationType() {
+    protected final PNOperationType getOperationType() {
         return PNOperationType.PNAddChannelsToGroupOperation;
     }
 

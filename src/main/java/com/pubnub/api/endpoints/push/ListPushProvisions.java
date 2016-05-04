@@ -1,7 +1,7 @@
 package com.pubnub.api.endpoints.push;
 
 import com.pubnub.api.PubNub;
-import com.pubnub.api.PubNubError;
+import com.pubnub.api.PubNubErrorBuilder;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.enums.PNPushType;
@@ -21,41 +21,41 @@ public class ListPushProvisions extends Endpoint<List<String>, PNPushListProvisi
     @Setter private PNPushType pushType;
     @Setter private String deviceId;
 
-    public ListPushProvisions(PubNub pubnub) {
-        super(pubnub);
+    public ListPushProvisions(final PubNub pubnubInstance) {
+        super(pubnubInstance);
     }
 
     @Override
-    protected boolean validateParams() {
-        return true;
+    protected void validateParams() {
+        // TODO
     }
 
     @Override
-    protected Call<List<String>> doWork(Map<String, String> params) throws PubNubException {
+    protected final Call<List<String>> doWork(final Map<String, String> params) throws PubNubException {
         params.put("type", pushType.name().toLowerCase());
         PushService service = this.createRetrofit().create(PushService.class);
-        return service.listChannelsForDevice(pubnub.getConfiguration().getSubscribeKey(), deviceId, params);
+        return service.listChannelsForDevice(this.getPubnub().getConfiguration().getSubscribeKey(), deviceId, params);
     }
 
     @Override
-    protected PNPushListProvisionsResult createResponse(Response<List<String>> input) throws PubNubException {
+    protected final PNPushListProvisionsResult createResponse(final Response<List<String>> input) throws PubNubException {
         if (input.body() == null) {
-            throw PubNubException.builder().pubnubError(PubNubError.PNERROBJ_PARSING_ERROR).build();
+            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_PARSING_ERROR).build();
         }
 
         return PNPushListProvisionsResult.builder().channels(input.body()).build();
     }
 
-    protected int getConnectTimeout() {
-        return pubnub.getConfiguration().getConnectTimeout();
+    protected final int getConnectTimeout() {
+        return this.getPubnub().getConfiguration().getConnectTimeout();
     }
 
-    protected int getRequestTimeout() {
-        return pubnub.getConfiguration().getNonSubscribeRequestTimeout();
+    protected final int getRequestTimeout() {
+        return this.getPubnub().getConfiguration().getNonSubscribeRequestTimeout();
     }
 
     @Override
-    protected PNOperationType getOperationType() {
+    protected final PNOperationType getOperationType() {
         return PNOperationType.PNPushNotificationEnabledChannelsOperation;
     }
 

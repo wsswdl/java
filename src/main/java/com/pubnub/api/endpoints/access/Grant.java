@@ -3,7 +3,7 @@ package com.pubnub.api.endpoints.access;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pubnub.api.PubNub;
-import com.pubnub.api.PubNubError;
+import com.pubnub.api.PubNubErrorBuilder;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.PubNubUtil;
 import com.pubnub.api.enums.PNOperationType;
@@ -37,24 +37,24 @@ public class Grant extends Endpoint<Envelope<AccessManagerGrantPayload>, PNAcces
     @Setter private List<String> channels;
     @Setter private List<String> channelGroups;
 
-    public Grant(PubNub pubnub) {
+    public Grant(final PubNub pubnub) {
         super(pubnub);
     }
 
     @Override
-    protected boolean validateParams() {
-        return true;
+    protected void validateParams() {
+        //TODO
     }
 
     @Override
-    protected Call<Envelope<AccessManagerGrantPayload>> doWork(Map<String, String> queryParams) throws PubNubException {
+    protected final Call<Envelope<AccessManagerGrantPayload>> doWork(Map<String, String> queryParams) throws PubNubException {
         String signature;
 
-        String signInput = this.pubnub.getConfiguration().getSubscribeKey() + "\n"
-                + this.pubnub.getConfiguration().getPublishKey() + "\n"
+        String signInput = this.getPubnub().getConfiguration().getSubscribeKey() + "\n"
+                + this.getPubnub().getConfiguration().getPublishKey() + "\n"
                 + "grant" + "\n";
 
-        queryParams.put("timestamp", String.valueOf(pubnub.getTimestamp()));
+        queryParams.put("timestamp", String.valueOf(this.getPubnub().getTimestamp()));
 
         if (channels != null && channels.size() > 0) {
             queryParams.put("channel", PubNubUtil.joinString(channels, ","));
@@ -78,21 +78,21 @@ public class Grant extends Endpoint<Envelope<AccessManagerGrantPayload>, PNAcces
 
         signInput += PubNubUtil.preparePamArguments(queryParams);
 
-        signature = PubNubUtil.signSHA256(this.pubnub.getConfiguration().getSecretKey(), signInput);
+        signature = PubNubUtil.signSHA256(this.getPubnub().getConfiguration().getSecretKey(), signInput);
 
         queryParams.put("signature", signature);
 
         AccessManagerService service = this.createRetrofit().create(AccessManagerService.class);
-        return service.grant(pubnub.getConfiguration().getSubscribeKey(), queryParams);
+        return service.grant(this.getPubnub().getConfiguration().getSubscribeKey(), queryParams);
     }
 
     @Override
-    protected PNAccessManagerGrantResult createResponse(Response<Envelope<AccessManagerGrantPayload>> input) throws PubNubException {
+    protected final PNAccessManagerGrantResult createResponse(final Response<Envelope<AccessManagerGrantPayload>> input) throws PubNubException {
         ObjectMapper mapper = new ObjectMapper();
         PNAccessManagerGrantResult.PNAccessManagerGrantResultBuilder pnAccessManagerGrantResult = PNAccessManagerGrantResult.builder();
 
         if (input.body() == null || input.body().getPayload() == null) {
-            throw PubNubException.builder().pubnubError(PubNubError.PNERROBJ_PARSING_ERROR).build();
+            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_PARSING_ERROR).build();
         }
 
         AccessManagerGrantPayload data = input.body().getPayload();
@@ -110,14 +110,14 @@ public class Grant extends Endpoint<Envelope<AccessManagerGrantPayload>, PNAcces
             } else if (channelGroups.size() > 1) {
                 try {
                     HashMap<String, PNAccessManagerKeysData> channelGroupKeySet = mapper.readValue(data.getChannelGroups().toString(),
-                            new TypeReference<HashMap<String, PNAccessManagerKeysData>>() {});
+                            new TypeReference<HashMap<String, PNAccessManagerKeysData>>() { });
 
                     for (String fetchedChannelGroup : channelGroupKeySet.keySet()) {
                         constructedGroups.put(fetchedChannelGroup, channelGroupKeySet.get(fetchedChannelGroup).getAuthKeys());
                     }
 
                 } catch (IOException e) {
-                    throw PubNubException.builder().pubnubError(PubNubError.PNERROBJ_PARSING_ERROR).errormsg(e.getMessage()).build();
+                    throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_PARSING_ERROR).errormsg(e.getMessage()).build();
                 }
             }
         }
@@ -139,16 +139,16 @@ public class Grant extends Endpoint<Envelope<AccessManagerGrantPayload>, PNAcces
                 .build();
     }
 
-    protected int getConnectTimeout() {
-        return pubnub.getConfiguration().getConnectTimeout();
+    protected final int getConnectTimeout() {
+        return this.getPubnub().getConfiguration().getConnectTimeout();
     }
 
-    protected int getRequestTimeout() {
-        return pubnub.getConfiguration().getNonSubscribeRequestTimeout();
+    protected final int getRequestTimeout() {
+        return this.getPubnub().getConfiguration().getNonSubscribeRequestTimeout();
     }
 
     @Override
-    protected PNOperationType getOperationType() {
+    protected final PNOperationType getOperationType() {
         return PNOperationType.PNAccessManagerGrant;
     }
 

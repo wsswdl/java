@@ -1,7 +1,7 @@
 package com.pubnub.api.endpoints.channel_groups;
 
 import com.pubnub.api.PubNub;
-import com.pubnub.api.PubNubError;
+import com.pubnub.api.PubNubErrorBuilder;
 import com.pubnub.api.PubNubException;
 import com.pubnub.api.enums.PNOperationType;
 import com.pubnub.api.models.server.Envelope;
@@ -23,15 +23,15 @@ public class ListAllChannelGroup extends Endpoint<Envelope<Object>, PNChannelGro
     }
 
     @Override
-    protected boolean validateParams() {
-        return true;
+    protected void validateParams() {
+        //TODO
     }
 
     @Override
     protected Call<Envelope<Object>> doWork(Map<String, String> params) {
         ChannelGroupService service = this.createRetrofit().create(ChannelGroupService.class);
 
-        return service.ListAllChannelGroup(pubnub.getConfiguration().getSubscribeKey(), params);
+        return service.listAllChannelGroup(this.getPubnub().getConfiguration().getSubscribeKey(), params);
     }
 
     @Override
@@ -39,7 +39,7 @@ public class ListAllChannelGroup extends Endpoint<Envelope<Object>, PNChannelGro
         Map<String, Object> stateMappings;
 
         if (input.body() == null || input.body().getPayload() == null) {
-            throw PubNubException.builder().pubnubError(PubNubError.PNERROBJ_PARSING_ERROR).build();
+            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_PARSING_ERROR).build();
         }
         
         stateMappings = (Map<String, Object>) input.body().getPayload();
@@ -51,11 +51,11 @@ public class ListAllChannelGroup extends Endpoint<Envelope<Object>, PNChannelGro
     }
 
     protected int getConnectTimeout() {
-        return pubnub.getConfiguration().getConnectTimeout();
+        return this.getPubnub().getConfiguration().getConnectTimeout();
     }
 
     protected int getRequestTimeout() {
-        return pubnub.getConfiguration().getNonSubscribeRequestTimeout();
+        return this.getPubnub().getConfiguration().getNonSubscribeRequestTimeout();
     }
 
     @Override

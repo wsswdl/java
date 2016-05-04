@@ -7,16 +7,24 @@ import com.pubnub.api.endpoints.History;
 import com.pubnub.api.endpoints.Time;
 import com.pubnub.api.endpoints.access.Audit;
 import com.pubnub.api.endpoints.access.Grant;
-import com.pubnub.api.endpoints.channel_groups.*;
+import com.pubnub.api.endpoints.channel_groups.AddChannelChannelGroup;
+import com.pubnub.api.endpoints.channel_groups.AllChannelsChannelGroup;
+import com.pubnub.api.endpoints.channel_groups.DeleteChannelGroup;
+import com.pubnub.api.endpoints.channel_groups.ListAllChannelGroup;
+import com.pubnub.api.endpoints.channel_groups.RemoveChannelChannelGroup;
 import com.pubnub.api.endpoints.presence.GetState;
 import com.pubnub.api.endpoints.presence.HereNow;
 import com.pubnub.api.endpoints.presence.SetState;
 import com.pubnub.api.endpoints.presence.WhereNow;
 import com.pubnub.api.endpoints.pubsub.Publish;
-import com.pubnub.api.endpoints.push.*;
+import com.pubnub.api.endpoints.push.AddChannelsToPush;
+import com.pubnub.api.endpoints.push.ListPushProvisions;
+import com.pubnub.api.endpoints.push.RemoveAllPushChannelsForDevice;
+import com.pubnub.api.endpoints.push.RemoveChannelsFromPush;
 import com.pubnub.api.managers.BasePathManager;
 import com.pubnub.api.managers.PublishSequenceManager;
 import com.pubnub.api.managers.SubscriptionManager;
+import com.pubnub.api.vendor.Crypto;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -152,7 +160,7 @@ public class PubNub {
      */
     public final String decrypt(String inputString) throws PubNubException {
         if (inputString == null) {
-            throw PubNubException.builder().pubnubError(PubNubError.PNERROBJ_INVALID_ARGUMENTS).build();
+            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_INVALID_ARGUMENTS).build();
         }
 
         return decrypt(inputString, this.getConfiguration().getCipherKey());
@@ -167,7 +175,7 @@ public class PubNub {
      */
     public final String decrypt(final String inputString, final String cipherKey) throws PubNubException {
         if (inputString == null) {
-            throw PubNubException.builder().pubnubError(PubNubError.PNERROBJ_INVALID_ARGUMENTS).build();
+            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_INVALID_ARGUMENTS).build();
         }
 
         return new Crypto(cipherKey).decrypt(inputString);
@@ -180,7 +188,7 @@ public class PubNub {
      */
     public final String encrypt(final String inputString) throws PubNubException {
         if (inputString == null) {
-            throw PubNubException.builder().pubnubError(PubNubError.PNERROBJ_INVALID_ARGUMENTS).build();
+            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_INVALID_ARGUMENTS).build();
         }
 
         return encrypt(inputString, this.getConfiguration().getCipherKey());
@@ -195,7 +203,7 @@ public class PubNub {
      */
     public final String encrypt(final String inputString, final String cipherKey) throws PubNubException {
         if (inputString == null) {
-            throw PubNubException.builder().pubnubError(PubNubError.PNERROBJ_INVALID_ARGUMENTS).build();
+            throw PubNubException.builder().pubnubError(PubNubErrorBuilder.PNERROBJ_INVALID_ARGUMENTS).build();
         }
 
         return new Crypto(cipherKey).encrypt(inputString);

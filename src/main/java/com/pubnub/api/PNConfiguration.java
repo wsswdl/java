@@ -15,6 +15,13 @@ import java.util.UUID;
 @Accessors(chain = true)
 public class PNConfiguration {
 
+
+    private static final int DEFAULT_PRESENCE_TIMEOUT = 300;
+    private static final int DEFAULT_CONNECT_TIMEOUT = 5;
+
+    private static final int DEFAULT_SUBSCRIBE_TIMEOUT = 310;
+    private static final int DEFAULT_TRANSACTIONAL_TIMEOUT = 10;
+
     /**
      * By default, the origin is pointing directly to PubNub servers. If a proxy origin is neeeded, set a custom
      * origin using this parameter.
@@ -87,13 +94,13 @@ public class PNConfiguration {
      * Initialize the PNConfiguration with default values
      */
     public PNConfiguration() {
-        setPresenceTimeout(300);
+        setPresenceTimeout(DEFAULT_PRESENCE_TIMEOUT);
 
         uuid = UUID.randomUUID().toString();
 
-        nonSubscribeRequestTimeout = 10;
-        subscribeTimeout = 310;
-        connectTimeout = 5;
+        nonSubscribeRequestTimeout = DEFAULT_TRANSACTIONAL_TIMEOUT;
+        subscribeTimeout = DEFAULT_SUBSCRIBE_TIMEOUT;
+        connectTimeout = DEFAULT_CONNECT_TIMEOUT;
 
         logVerbosity = PNLogVerbosity.NONE;
 
@@ -106,7 +113,7 @@ public class PNConfiguration {
      * @param interval presence announce interval, how often the client should announce itself.
      * @return returns itself.
      */
-    public PNConfiguration setPresenceTimeoutWithCustomInterval(final int timeout, final int interval) {
+    public final PNConfiguration setPresenceTimeoutWithCustomInterval(final int timeout, final int interval) {
         this.presenceTimeout = timeout;
         this.heartbeatInterval = interval;
 
@@ -118,8 +125,8 @@ public class PNConfiguration {
      * @param timeout presence timeout; how long before the server considers this client to be gone.
      * @return returns itself.
      */
-    public PNConfiguration setPresenceTimeout(final int timeout) {
-        return setPresenceTimeoutWithCustomInterval(timeout,(timeout / 2) - 1);
+    public final PNConfiguration setPresenceTimeout(final int timeout) {
+        return setPresenceTimeoutWithCustomInterval(timeout, (timeout / 2) - 1);
     }
 
 }

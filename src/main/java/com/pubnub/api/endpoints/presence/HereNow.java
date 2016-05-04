@@ -34,8 +34,8 @@ public class HereNow extends Endpoint<Envelope<Object>, PNHereNowResult> {
 
 
     @Override
-    protected boolean validateParams() {
-        return true;
+    protected void validateParams() {
+        // TODO
     }
 
     @Override
@@ -70,9 +70,9 @@ public class HereNow extends Endpoint<Envelope<Object>, PNHereNowResult> {
         }
 
         if (channels.size() > 0 || channelGroups.size() > 0) {
-            return service.hereNow(pubnub.getConfiguration().getSubscribeKey(), channelCSV, params);
+            return service.hereNow(this.getPubnub().getConfiguration().getSubscribeKey(), channelCSV, params);
         } else {
-            return service.globalHereNow(pubnub.getConfiguration().getSubscribeKey(), params);
+            return service.globalHereNow(this.getPubnub().getConfiguration().getSubscribeKey(), params);
         }
     }
 
@@ -117,10 +117,10 @@ public class HereNow extends Endpoint<Envelope<Object>, PNHereNowResult> {
             .totalOccupancy((Integer) parsedInput.get("total_occupancy"))
             .build();
 
-        Map<String, Object> channels = (HashMap<String, Object>) parsedInput.get("channels");
+        Map<String, Object> responseChannels = (HashMap<String, Object>) parsedInput.get("channels");
 
-        for (String channelName: channels.keySet()) {
-            Map<String, Object> channel = (Map<String, Object>) channels.get(channelName);
+        for (String channelName: responseChannels.keySet()) {
+            Map<String, Object> channel = (Map<String, Object>) responseChannels.get(channelName);
 
             PNHereNowChannelData.PNHereNowChannelDataBuilder hereNowChannelData = PNHereNowChannelData.builder()
                 .channelName(channelName)
@@ -162,11 +162,11 @@ public class HereNow extends Endpoint<Envelope<Object>, PNHereNowResult> {
     }
 
     protected int getConnectTimeout() {
-        return pubnub.getConfiguration().getConnectTimeout();
+        return this.getPubnub().getConfiguration().getConnectTimeout();
     }
 
     protected int getRequestTimeout() {
-        return pubnub.getConfiguration().getNonSubscribeRequestTimeout();
+        return this.getPubnub().getConfiguration().getNonSubscribeRequestTimeout();
     }
 
     @Override

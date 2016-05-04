@@ -10,7 +10,7 @@ import retrofit2.Call;
 @Getter
 public class PubNubException extends Exception {
     private String errormsg = "";
-    private PubNubError pubnubError;
+    private PubNubErrorBuilder pubnubError;
     private JsonNode jso;
     private String response;
     private int statusCode;
